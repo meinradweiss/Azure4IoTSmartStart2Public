@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32228.343
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "TsSmartSqlStore2", "TsSmartSqlStore2\TsSmartSqlStore2.sqlproj", "{C4629B75-5104-4769-82C7-F0AE6458411B}"
+EndProject
+Project("{E6C563F2-BDC2-4A24-ACBF-01715157DCBB}") = "TsSmartStreamAnalyticsJob", "TsSmartStreamAnalyticsJob\TsSmartStreamAnalyticsJob.asaproj", "{5F957A1B-6C8E-410D-8D1C-4C2B6FC76359}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C4629B75-5104-4769-82C7-F0AE6458411B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4629B75-5104-4769-82C7-F0AE6458411B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4629B75-5104-4769-82C7-F0AE6458411B}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{C4629B75-5104-4769-82C7-F0AE6458411B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4629B75-5104-4769-82C7-F0AE6458411B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4629B75-5104-4769-82C7-F0AE6458411B}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{5F957A1B-6C8E-410D-8D1C-4C2B6FC76359}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F957A1B-6C8E-410D-8D1C-4C2B6FC76359}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F957A1B-6C8E-410D-8D1C-4C2B6FC76359}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F957A1B-6C8E-410D-8D1C-4C2B6FC76359}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {92D671A9-41AD-4B99-982B-CD8FF7A2DD71}
+	EndGlobalSection
+EndGlobal

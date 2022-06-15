@@ -1,0 +1,109 @@
+﻿
+-- Begin of section to be adjusted
+
+  WITH ParsedMessage
+  AS
+  (
+  	SELECT
+   	  IotDataInput.deviceId
+       ,IotDataInput.eventTimestamp
+       ,Property.propertyName                         AS Measurand
+       ,Property.propertyValue                        AS MeasurementValue
+  	 ,IotDataInput
+      FROM  [IotDataInput]
+  	  CROSS APPLY GetRecordProperties(IotDataInput)   AS Property
+      WHERE Property.propertyname = 'temperature'
+         OR Property.propertyname = 'humidity'
+  
+  )
+  
+  ,IoTDataInputWithSignalName  
+  AS
+  (
+  
+    SELECT 
+       TRY_CAST(eventTimestamp AS DATETIME)                            AS [Ts]
+       ,deviceId                                                       AS [DeviceId]
+       ,Measurand                                                      AS [Measurand]
+       ,CONCAT(deviceId, '_', Measurand)                               AS [SignalName]
+       ,TRY_CAST([MeasurementValue] AS FLOAT)                          AS [MeasurementValue]
+       ,CASE WHEN LEN([MeasurementValue]) > 0 
+              AND TRY_CAST([MeasurementValue] AS FLOAT) IS NULL 
+                                              THEN [MeasurementValue]  
+       						                  ELSE NULL 
+        END                                                            AS [MeasurementText]
+       ,eventTimestamp                                                 AS [SourceTS]
+       ,[MeasurementValue]                                             AS [SourceMeasurementValue]
+       ,[MeasurementValue]                                             AS [SourceMeasurementText]
+       
+       ,IotDataInput                                                   AS [SourceMessage]
+    FROM [ParsedMessage]
+  )
+
+-- End of section to be adjusted
+
+  ,IoTDataInputWithSignalId  AS
+  (
+	SELECT  [IoTInput].[Ts]
+		   ,[IoTInput].[DeviceId]
+		   ,[IoTInput].[Measurand]
+           ,[CoreSignal].[SignalId]    
+		   ,[IoTInput].[SignalName]
+		   ,[IoTInput].[MeasurementValue]
+		   ,[IoTInput].[MeasurementText]
+		   ,[IoTInput].[SourceTS]
+		   ,[IoTInput].[SourceMeasurementValue]
+		   ,[IoTInput].[SourceMeasurementText]
+		   ,[IoTInput].[SourceMessage]
+	FROM [IoTDataInputWithSignalName]   AS [IoTInput]  
+      LEFT OUTER JOIN [CoreSignal]
+        ON [IoTInput].[SignalName] = [CoreSignal].[SignalName]  
+  )
+
+-- [MeasurementWrongMessageFormatOrDataType]
+SELECT  [Ts]                     
+	   ,[SignalId]               
+	   ,[SignalName]             
+	   ,[MeasurementValue]       
+	   ,[MeasurementText]        
+	   ,[SourceTS]               
+	   ,[SourceMeasurementValue] 
+	   ,[SourceMeasurementText]  
+	   ,[SourceMessage]   
+INTO [MeasurementWrongMessageFormatOrDataType] 
+FROM [IoTDataInputWithSignalId]
+WHERE [Ts]                IS NULL
+  OR  [SignalName]        IS NULL
+  OR ( ([MeasurementValue] IS NULL)
+   AND ([MeasurementText]  IS NULL))
+
+
+-- [MeasurementWithSignalName]  
+SELECT  [Ts]
+	   ,[SignalName]
+       ,[DeviceId]  
+       ,[Measurand]
+	   ,[MeasurementValue]
+	   ,[MeasurementText]
+INTO [MeasurementWithSignalName]       
+FROM [IoTDataInputWithSignalId]
+WHERE [Ts]          IS NOT NULL
+  AND ([MeasurementValue] IS NOT NULL
+   OR  [MeasurementText]  IS NOT NULL )
+  AND [SignalName]        IS NOT NULL
+  AND [SignalId]          IS     NULL          -- New Signal
+
+
+-- [Measurement]
+SELECT  [IoTInput].[Ts]                          AS [Ts]
+       ,[CoreSignal].[SignalId]                 AS [SignalId]
+	   ,[IoTInput].[MeasurementValue]            AS [MeasurementValue]
+	   ,[IoTInput].[MeasurementText]             AS [MeasurementText]
+INTO [Measurement]       
+FROM [IoTDataInputWithSignalName]  AS [IoTInput]
+  INNER JOIN [CoreSignal]                       -- Known Signal
+    ON [IoTInput].[SignalName] = [CoreSignal].[SignalName]
+WHERE [IoTInput].[Ts]                IS NOT NULL
+  AND ([IoTInput].[MeasurementValue] IS NOT NULL
+   OR  [IoTInput].[MeasurementText]  IS NOT NULL )
+

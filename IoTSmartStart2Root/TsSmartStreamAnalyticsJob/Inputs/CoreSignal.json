@@ -1,0 +1,26 @@
+﻿{
+  "Name": "CoreSignal",
+  "Type": "Reference data",
+  "DataSourceType": "SQL Database",
+  "SqlReferenceProperties": {
+    "Database": "aaadeletemewsqldb",
+    "Server": "aaadeletemewsqlserver.database.windows.net",
+    "User": "ASA_MetaDataReader",
+    "Password": null,
+    "FullSnapshotPath": "CoreSignal.snapshot.sql",
+    "RefreshType": "Execute periodically",
+    "RefreshRate": "00.00:15:00",
+    "DeltaSnapshotPath": null
+  },
+  "DataSourceCredentialDomain": "1fdd41aa-4818-4039-9c06-e6c9f4eff47f.StreamAnalystics",
+  "Serialization": {
+    "Type": "Json",
+    "Encoding": "UTF8",
+    "FieldDelimiter": null,
+    "Format": null
+  },
+  "PartitionKey": null,
+  "CompressionType": null,
+  "Sample": null,
+  "ScriptType": "Input"
+}

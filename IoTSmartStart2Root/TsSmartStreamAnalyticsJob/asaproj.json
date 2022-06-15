@@ -1,0 +1,34 @@
+{
+    "name": "TsSmartStreamAnalyticsJob",
+    "startFile": "Script.asaql",
+    "configurations": [
+        {
+            "filePath": "Inputs\\CoreSignal.json",
+            "subType": "Input"
+        },
+        {
+            "filePath": "Inputs\\IoTDataInput.json",
+            "subType": "Input"
+        },
+        {
+            "filePath": "Outputs\\MeasurementWrongMessageFormatOrDataType.json",
+            "subType": "Output"
+        },
+        {
+            "filePath": "Outputs\\MeasurementWithSignalName.json",
+            "subType": "Output"
+        },
+        {
+            "filePath": "Outputs\\Measurement.json",
+            "subType": "Output"
+        },
+        {
+            "filePath": "JobConfig.json",
+            "subType": "JobConfig"
+        },
+        {
+            "filePath": "Inputs\\CoreSignal.snapshot.sql",
+            "subType": "SqlReference"
+        }
+    ]
+}

@@ -1,0 +1,220 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Name>TsSmartSqlStore</Name>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>4.1</ProjectVersion>
+    <ProjectGuid>{c4629b75-5104-4769-82c7-f0ae6458411b}</ProjectGuid>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.SqlAzureV12DatabaseSchemaProvider</DSP>
+    <OutputType>Database</OutputType>
+    <RootPath />
+    <RootNamespace>TsSmartSqlStore</RootNamespace>
+    <AssemblyName>TsSmartSqlStore</AssemblyName>
+    <ModelCollation>1033, CI</ModelCollation>
+    <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
+    <DeployToDatabase>True</DeployToDatabase>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetLanguage>CS</TargetLanguage>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <SqlServerVerification>False</SqlServerVerification>
+    <IncludeCompositeObjects>True</IncludeCompositeObjects>
+    <TargetDatabaseSet>True</TargetDatabaseSet>
+    <AutoCreateStatisticsIncremental>True</AutoCreateStatisticsIncremental>
+    <AllowSnapshotIsolation>True</AllowSnapshotIsolation>
+    <QueryStoreDesiredState>ReadOnly</QueryStoreDesiredState>
+    <QueryStoreCaptureMode>Auto</QueryStoreCaptureMode>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
+    <VisualStudioVersion Condition="'$(SSDTExists)' == ''">11.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Condition="'$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <ItemGroup>
+    <Folder Include="Properties" />
+    <Folder Include="Security\" />
+    <Folder Include="Security\Tables\" />
+    <Folder Include="Logging\" />
+    <Folder Include="Logging\Tables\" />
+    <Folder Include="Ingest\" />
+    <Folder Include="Ingest\Tables\" />
+    <Folder Include="Core\" />
+    <Folder Include="Core\Tables\" />
+    <Folder Include="dbo\" />
+    <Folder Include="dbo\Views\" />
+    <Folder Include="Mart\" />
+    <Folder Include="Mart\Views\" />
+    <Folder Include="Logging\Views\" />
+    <Folder Include="Ingest\Views\" />
+    <Folder Include="Core\Views\" />
+    <Folder Include="Security\Functions\" />
+    <Folder Include="dbo\Stored Procedures\" />
+    <Folder Include="Partition\" />
+    <Folder Include="Partition\Stored Procedures\" />
+    <Folder Include="Logging\Stored Procedures\" />
+    <Folder Include="Core\Stored Procedures\" />
+    <Folder Include="Storage\" />
+    <Folder Include="Logging\Sequences\" />
+    <Folder Include="Core\Sequences\" />
+    <Folder Include="HelperScripts" />
+    <Folder Include="ReleaseNotes" />
+    <Folder Include="Partition\Functions\" />
+    <Folder Include="Snapshots" />
+    <Folder Include="TsHelper\" />
+    <Folder Include="TsHelper\Tables\" />
+    <Folder Include="TsHelper\Views\" />
+    <Folder Include="TsHelper\Functions\" />
+    <Folder Include="TsHelper\Stored Procedures\" />
+    <Folder Include="DeploymentScripts" />
+    <Folder Include="DeploymentScripts\PreDeployment" />
+    <Folder Include="Mart\Functions\" />
+    <Folder Include="Partition\Views\" />
+    <Folder Include="Config\" />
+    <Folder Include="Config\Tables\" />
+    <Folder Include="Config\Functions\" />
+    <Folder Include="Helper\" />
+    <Folder Include="Helper\Stored Procedures\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="HelperScripts\CreateSignals.sql" />
+    <None Include="ReleaseNotes\ReleaseNotes.txt" />
+    <None Include="ReleaseNotes\Ideas.txt" />
+    <None Include="TsSmartSqlStore.publish.xml" />
+    <None Include="InitialDeploySqlSchemaCompare.scmp" />
+    <None Include="RegularDeploySqlSchemaCompare.scmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="Security\Tables\ApplicationUserHistory.sql" />
+    <Build Include="Security\Tables\ApplicationUser.sql" />
+    <Build Include="Security\Tables\ApplicationRoleSignalAccessHistory.sql" />
+    <Build Include="Security\Tables\ApplicationRoleSignalAccess.sql" />
+    <Build Include="Security\Tables\ApplicationRoleMemberHistory.sql" />
+    <Build Include="Security\Tables\ApplicationRoleMember.sql" />
+    <Build Include="Security\Tables\ApplicationRoleHistory.sql" />
+    <Build Include="Security\Tables\ApplicationRole.sql" />
+    <Build Include="Logging\Tables\TaskLog.sql" />
+    <Build Include="Logging\Tables\StepLog.sql" />
+    <Build Include="Core\Tables\Signal.sql" />
+    <Build Include="Core\Tables\MeasurementWrongMessageFormatOrDataType.sql" />
+    <Build Include="Core\Tables\MeasurementTransfer.sql" />
+    <Build Include="Core\Tables\MeasurementStore.sql" />
+    <Build Include="Core\Tables\MeasurementDuplicateKey.sql" />
+    <Build Include="Core\Tables\Measurement.sql" />
+    <Build Include="dbo\Views\IndexFragmentation.sql" />
+    <Build Include="Mart\Views\Signal.sql" />
+    <Build Include="Mart\Views\Measurement.sql" />
+    <Build Include="Mart\Views\Date.sql" />
+    <Build Include="Logging\Views\LogInfo.sql" />
+    <Build Include="Ingest\Views\MeasurementWrongMessageFormatOrDataType.sql" />
+    <Build Include="Ingest\Views\MeasurementWithSignalName.sql" />
+    <Build Include="Ingest\Views\Measurement.sql" />
+    <Build Include="Core\Views\AllMeasurement.sql" />
+    <Build Include="Security\Functions\fn_SignalSecurityPredicate.sql" />
+    <Build Include="dbo\Stored Procedures\SplitPartitionInMonthJunks.sql" />
+    <Build Include="dbo\Stored Procedures\SplitPartitionInDayJunks.sql" />
+    <Build Include="dbo\Stored Procedures\RebuildFragmentedIndexes.sql" />
+    <Build Include="Partition\Stored Procedures\CreateSwitchTable.sql" />
+    <Build Include="Logging\Stored Procedures\StartTask.sql" />
+    <Build Include="Logging\Stored Procedures\StartStep.sql" />
+    <Build Include="Logging\Stored Procedures\EndTask.sql" />
+    <Build Include="Logging\Stored Procedures\EndStep.sql" />
+    <Build Include="Core\Stored Procedures\OptimiseDataStorage.sql" />
+    <Build Include="Storage\monthPartitionFunction.sql" />
+    <Build Include="Storage\dayPartitionFunction.sql" />
+    <Build Include="Storage\monthPartitionScheme.sql" />
+    <Build Include="Storage\dayPartitionScheme.sql" />
+    <Build Include="Security\stage.sql" />
+    <Build Include="Security\Security.sql" />
+    <Build Include="Security\Partition.sql" />
+    <Build Include="Security\Mart.sql" />
+    <Build Include="Security\Logging.sql" />
+    <Build Include="Security\Ingest.sql" />
+    <Build Include="Security\Helper.sql" />
+    <Build Include="Security\Core.sql" />
+    <Build Include="Logging\Sequences\LogSequence.sql" />
+    <Build Include="Core\Sequences\Id.sql" />
+    <Build Include="Security\SignalFilter.sql" />
+    <Build Include="Partition\Functions\GetPartitionRangeCheckConstraint.sql" />
+    <Build Include="Partition\Stored Procedures\RemoveDataPartitionsFromTable.sql" />
+    <Build Include="Partition\Stored Procedures\GetPartition_Number.sql" />
+    <Build Include="Security\Archive.sql" />
+    <Build Include="Security\Transfer.sql" />
+    <Build Include="Core\Stored Procedures\RebuildFragmentedIndexes.sql" />
+    <Build Include="Partition\Stored Procedures\SplitPartitionInDayJunks.sql" />
+    <Build Include="Partition\Stored Procedures\SplitPartitionInMonthJunks.sql" />
+    <Build Include="Partition\Stored Procedures\MaintainPartitionBorders.sql" />
+    <Build Include="Core\Tables\LatestMeasurement.sql" />
+    <Build Include="TsHelper\Tables\HourTimeWindowSlot.sql" />
+    <Build Include="TsHelper\Views\LastKnownMeasurementPerHour.sql" />
+    <Build Include="TsHelper\Functions\GetHourlyMeasurement.sql" />
+    <Build Include="TsHelper\Functions\GetExtendedHourlyMeasurement.sql" />
+    <Build Include="TsHelper\Functions\GetHourlyMeasurementTwoStep.sql" />
+    <Build Include="TsHelper\Stored Procedures\SynchronizeHourTimeWindowSlot.sql" />
+    <Build Include="Security\TsHelper.sql" />
+    <Build Include="Mart\Views\LatestMeasurement.sql" />
+    <Build Include="Partition\Stored Procedures\EmptyAllDataTablesYesImConfidentToDo.sql" />
+    <Build Include="Core\Stored Procedures\GetOverviewOfDataInDatabase.sql" />
+    <Build Include="Mart\Functions\GetMeasurementForSignal.sql" />
+    <Build Include="Core\Stored Procedures\CopyMeasurementFromTs_DayToTs_Day.sql" />
+    <Build Include="Partition\Views\TablePartitionFunction.sql" />
+    <Build Include="Partition\Views\PartitionRangeValues.sql" />
+    <Build Include="Mart\Functions\GetMeasurementForRelativeTimeWindow.sql" />
+    <Build Include="Mart\Functions\GetMeasurementForRelativeTimeWindowWithLastPointProjection.sql" />
+    <Build Include="Mart\Functions\GetRelativeTimeWindow.sql" />
+    <Build Include="Core\Stored Procedures\SpocTemplate.sql" />
+    <Build Include="Core\Stored Procedures\MoveDataFromTransferToStore.sql" />
+    <Build Include="Config\Tables\SystemConfig.sql" />
+    <Build Include="Config\Functions\GetSystemConfigDebugMode.sql" />
+    <Build Include="Partition\Stored Procedures\CloneTableStructure.sql" />
+    <Build Include="Partition\Stored Procedures\CloneTableAddConstraint.sql" />
+    <Build Include="Partition\Stored Procedures\CloneTable.sql" />
+    <Build Include="Partition\Stored Procedures\CloneRegularIndexes.sql" />
+    <Build Include="Partition\Stored Procedures\ClonePkAndUcConstraints.sql" />
+    <Build Include="Partition\Stored Procedures\CloneFkConstraints.sql" />
+    <Build Include="Helper\Stored Procedures\Conditional_sp_executesql_print.sql" />
+    <Build Include="Security\Config.sql" />
+    <Build Include="Helper\Stored Procedures\Conditional_print.sql" />
+    <Build Include="Partition\Stored Procedures\CheckNonTrustedConstraints.sql" />
+    <Build Include="Config\Tables\SignalDefaultConfig.sql" />
+    <Build Include="Mart\Functions\GetPivotHumidityTemperature.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <ArtifactReference Include="$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\AzureV12\SqlSchemas\master.dacpac">
+      <HintPath>$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\AzureV12\SqlSchemas\master.dacpac</HintPath>
+      <SuppressMissingDependenciesErrors>False</SuppressMissingDependenciesErrors>
+      <DatabaseVariableLiteralValue>master</DatabaseVariableLiteralValue>
+    </ArtifactReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="InitialisePartitions.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <PreDeploy Include="DeploymentScripts\PreDeployment\PreDeployment1.sql" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,16 @@
+﻿{
+  "Name": "MeasurementWrongMessageFormatOrDataType",
+  "DataSourceType": "SQL Database",
+  "SQLDatabaseProperties": {
+    "Database": "aaadeletemewsqldb",
+    "Server": "aaadeletemewsqlserver.database.windows.net",
+    "User": "ASA_TelemetryWriter",
+    "Password": null,
+    "AuthenticationMode": null,
+    "Table": "[Ingest].[MeasurementWrongMessageFormatOrDataType]",
+    "MaxWriterCount": 1,
+    "MaxBatchCount": 10000
+  },
+  "DataSourceCredentialDomain": "3b39797b-863f-4087-8bc7-2222f0bb75bd.StreamAnalystics",
+  "ScriptType": "Output"
+}

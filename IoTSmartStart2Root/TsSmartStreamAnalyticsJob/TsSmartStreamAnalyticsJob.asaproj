@@ -1,0 +1,59 @@
+﻿<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>5f957a1b-6c8e-410d-8d1c-4c2b6fc76359</ProjectGuid>
+    <OutputType>File</OutputType>
+    <AssemblyName>TsSmartStreamAnalyticsJob</AssemblyName>
+    <StartFile>Script.asaql</StartFile>
+    <ASATargetsFilePath>$(AppData)\Microsoft\DataLake\MsBuild\1.0\StreamAnalytics.targets</ASATargetsFilePath>
+    <Name>TsSmartStreamAnalyticsJob</Name>
+    <RootNamespace>TsSmartStreamAnalyticsJob</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>false</DebugSymbols>
+    <OutputPath>bin\Release\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Script Include="Script.asaql" />
+    <ScriptCode Include="Script.asaql.cs">
+      <DependentUpon>Script.asaql</DependentUpon>
+    </ScriptCode>
+  </ItemGroup>
+  <ItemGroup>
+    <Configure Include="Inputs\CoreSignal.json">
+      <SubType>Input</SubType>
+    </Configure>
+    <Configure Include="Inputs\IoTDataInput.json">
+      <SubType>Input</SubType>
+    </Configure>
+    <Configure Include="Outputs\MeasurementWrongMessageFormatOrDataType.json">
+      <SubType>Output</SubType>
+    </Configure>
+    <Configure Include="Outputs\MeasurementWithSignalName.json">
+      <SubType>Output</SubType>
+    </Configure>
+    <Configure Include="Outputs\Measurement.json">
+      <SubType>Output</SubType>
+    </Configure>
+    <Configure Include="JobConfig.json">
+      <SubType>JobConfig</SubType>
+    </Configure>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Inputs" />
+    <Folder Include="Functions" />
+    <Folder Include="Outputs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Configure Include="Inputs\CoreSignal.snapshot.sql">
+      <SubType>SqlReference</SubType>
+      <DependentUpon>Inputs\CoreSignal.json</DependentUpon>
+    </Configure>
+  </ItemGroup>
+  <Import Project="$(ASATargetsFilePath)" />
+</Project>
