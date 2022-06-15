@@ -65,7 +65,7 @@ Before starting with the deployment, please make sure that the Azure services ha
 Clone the following github repository to your local computer:
 
 ```
-git clone https://github.com/meinradweiss/Azure4IoTSmartStart2
+git clone https://github.com/meinradweiss/Azure4IoTSmartStart2Public
 ```
 
 **The github repository is currently private, please reach out to the repository owner to get access.**
