@@ -3,8 +3,8 @@
   "Type": "Reference data",
   "DataSourceType": "SQL Database",
   "SqlReferenceProperties": {
-    "Database": "aaadeletemewsqldb",
-    "Server": "aaadeletemewsqlserver.database.windows.net",
+    "Database": "aach4iot4wsxxxsqldb",
+    "Server": "aach4iot4wsxxxsqlserver.database.windows.net",
     "User": "ASA_MetaDataReader",
     "Password": null,
     "FullSnapshotPath": "CoreSignal.snapshot.sql",

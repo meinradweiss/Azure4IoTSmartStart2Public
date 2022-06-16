@@ -3,7 +3,7 @@
   "Type": "Data Stream",
   "DataSourceType": "IoT Hub",
   "IoTHubProperties": {
-    "IotHubNamespace": "aaadeletemewhub",
+    "IotHubNamespace": "aach4iot4wsxxxhub",
     "EndPoint": "messages/events",
     "SharedAccessPolicyName": "iothubowner",
     "SharedAccessPolicyKey": null,
@@ -18,6 +18,6 @@
   },
   "PartitionKey": null,
   "CompressionType": "None",
-  "Sample": null,
+  "Sample": "{\"messageId\":1,\"deviceId\":\"Raspberry Pi Web Client\",\"temperature\":27.328581218101345,\"humidity\":60.682512209982264,\"eventTimestamp\":\"2022-06-16T07:41:32.420Z\"}",
   "ScriptType": "Input"
 }

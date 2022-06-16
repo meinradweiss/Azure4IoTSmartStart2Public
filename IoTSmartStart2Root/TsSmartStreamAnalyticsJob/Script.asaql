@@ -5,7 +5,7 @@
   AS
   (
   	SELECT
-   	  IotDataInput.deviceId
+   	  IotDataInput.IoTHub.ConnectionDeviceId          AS DeviceId
        ,IotDataInput.eventTimestamp
        ,Property.propertyName                         AS Measurand
        ,Property.propertyValue                        AS MeasurementValue
@@ -23,12 +23,11 @@
   
     SELECT 
        TRY_CAST(eventTimestamp AS DATETIME)                            AS [Ts]
-       ,deviceId                                                       AS [DeviceId]
+       ,DeviceId                                                       AS [DeviceId]
        ,Measurand                                                      AS [Measurand]
-       ,CONCAT(deviceId, '_', Measurand)                               AS [SignalName]
+       ,CONCAT(DeviceId, '_', Measurand)                               AS [SignalName]
        ,TRY_CAST([MeasurementValue] AS FLOAT)                          AS [MeasurementValue]
-       ,CASE WHEN LEN([MeasurementValue]) > 0 
-              AND TRY_CAST([MeasurementValue] AS FLOAT) IS NULL 
+       ,CASE WHEN TRY_CAST([MeasurementValue] AS FLOAT) IS NULL 
                                               THEN [MeasurementValue]  
        						                  ELSE NULL 
         END                                                            AS [MeasurementText]

@@ -9,17 +9,13 @@ IoT solutions using Azure IoT Hub, Azure Stream Analytics and Azure SQL
 - [Get access to the code](#get-access-to-the-code)
 - [Install Azure Services](#install-azure-services)
   - [Prepare data database](#prepare-data-database)
-    - [Create Users in the database](#create-users-in-the-database)
+    - [Set Active Directory admin](#set-active-directory-admin)
     - [Deploy the database schema to your database](#deploy-the-database-schema-to-your-database)
+    - [Create Users in the database](#create-users-in-the-database)
     - [Initialize partitions](#initialize-partitions)
     - [Define (default) behaviour of Measurand(s)](#define-default-behaviour-of-measurands)
   - [Optionally: Prepare the Azure IoT hub and Raspberry-pi emulator](#optionally-prepare-the-azure-iot-hub-and-raspberry-pi-emulator)
   - [Optionally: Configure the Raspberry Pi sample application](#optionally-configure-the-raspberry-pi-sample-application)
-  - [Maintain the database](#maintain-the-database)
-    - [Add partitions for upcoming days](#add-partitions-for-upcoming-days)
-    - [Remove index fragmentation](#remove-index-fragmentation)
-    - [Keep long history, use month partitions](#keep-long-history-use-month-partitions)
-    - [Remove data from the system](#remove-data-from-the-system)
   - [Modify Stream Analytics project](#modify-stream-analytics-project)
     - [Configure Stream Analytics Storage Account](#configure-stream-analytics-storage-account)
     - [Define connection information of Inputs](#define-connection-information-of-inputs)
@@ -27,7 +23,10 @@ IoT solutions using Azure IoT Hub, Azure Stream Analytics and Azure SQL
       - [IoTDataInput](#iotdatainput)
     - [Define connection information of Outputs](#define-connection-information-of-outputs)
     - [Adjust the Stream Analytics Query](#adjust-the-stream-analytics-query)
+    - [Test the Strem Analytics query](#test-the-strem-analytics-query)
+    - [Submit the Strem Analytics project to Azrue](#submit-the-strem-analytics-project-to-azrue)
   - [Test your system](#test-your-system)
+  - [Setup Database Maintenance Jobs](#setup-database-maintenance-jobs)
 
 
 <br/>
@@ -80,7 +79,7 @@ The following button deploys the core infrastructure into your chosen subscripti
 
 For the custom deployment, the following parameters need to be defined:
 - **Region**: Select your designated Azure Region, make sure to pick a region which supports the necessary components
-- **Unique Solution Prefix**: Pick a unique string for your solution. The name must be between 3 and 24 characters in length and use numbers and lower-case letters only.<br/> The prefix be appended at the front of your Azrue services. It is helpful, if it relates somehow to your project and it is the part of the object names that makes them unique.
+- **Unique Solution Prefix**: Pick a unique string for your solution. The name must be between 3 and 24 characters in length and use numbers and lower-case letters only.<br/> The prefix will be appended at the front of your Azure services. <br/>It is helpful, if it relates somehow to your project and it is the part of the object names that makes them unique.
   - Example: <br/> 
     Unique Solution Prefix: **ch4iot4wsxxx** -> Azure IotHub: **ch4iot4wsxxx**hub, Azure SQL Server: **ch4iot4wsxxx**sqlserver, ...
 - **Sql Administrator Login**: pick an username for your SQL administrator
@@ -91,6 +90,29 @@ For the custom deployment, the following parameters need to be defined:
 If you would like to deploy the services from you local machine you can find the arm templates and a supporting deployment script in the ```infrastructure``` folder.
 
 ## Prepare data database ##
+
+### Set Active Directory admin ###
+
+Assign your AAD identity as the Active Directory admin of the Azure SQL Server. Locate your new created Azure SQL Server in the azure portal and click [Azure Active Directory] in the [Settings] section.
+
+![Set Active Directory admin](media/05_01_SetSQLAdminAccount.png)
+
+Don't forget to press the [Save] button.
+<br/>
+<br/>
+
+### Deploy the database schema to your database ###
+
+Open the solution in Visual Studio and then open the SchemaCompare file: **InitialDeploySqlSchemaCompare.scmp**. Configure the target database -> point it to your Azure SQL database. Press the [Compare], check the differences and press [Update]
+<br/>
+
+![Schema compare and update](media/10_00_SchemaCompareAndUpdate.png)
+
+
+<br/>
+
+For any further updates you should use the SchemaCompare file: **RegularDeploySqlSchemaCompare.scmp**
+
 
 ### Create Users in the database ###
 
@@ -114,13 +136,6 @@ If you would like to setup SQL users based on the managed identiy, then you must
 
 <br/>
 
-### Deploy the database schema to your database ###
-
-Open the solution in Visual Studio and then open the SchemaCompare file: InitialDeploySqlSchemaCompare.scmp. Configure the target database -> point it to your Azure SQL database. Press the [Compare], check the differences and press [Update]<br/>
-<br/>
-
-For any further updates you should use the SchemaCompare file: RegularDeploySqlSchemaCompare.scmp
-
 
 ### Initialize partitions ###
 A key aspect of the solution is the fact that the large tables are partitioned. The solution just contains one partition border with the value '1900-01-01 00:00:00'. The first step after deploying the solution to the database is to create the real partitions which matches to the data that will be stored in the database. <br/>
@@ -128,7 +143,7 @@ The stored procedure [Partition].[MaintainPartitionBorders] can be used to do an
 <br/>
 
 ![Initial partition structure](media/10_01_PartitionStructure.png)
-
+<br/>
 
 **Stored Procedure: [Partition].[MaintainPartitionBorders]**
 
@@ -139,7 +154,10 @@ Creates "empty" partitions for dayPartion and monthPartition Schema/Function. If
 | @startDate | DATETIME2 (0) | 1      | "today" | Specifies the start day to maintain the partition borders. The stored procedure takes this date and then calculates the first day of the corresponding month to define the real start date. |
 | @dayAheadNumber | INT | 1 |  35    | The number of days that are added to the current day. The system seeks then forward to the first day of the next month. <br/> e.g. @startDate = '2021-09-07', <br/>the current date is '2021-09-29' and  @dayAheadNumber int = 35 <br/>-> Partitions from 2021-09-01 to 2021-12-01 will be created, <br/> for the dayPartion Schema/Function and also for the monthPartition Schema/Function |
 
-If you would like to load historical data to the database, then you should specify the @startDate parameter. It should be set to the first date of the historical data.
+If you would like to load historical data to the database, then you should specify the @startDate parameter. It should be set to the first date of the historical data.<br/>
+Otherwise, if you work on a new project and you are collecting data starting from today, then you can just execute the procedure [Partition].[MaintainPartitionBorders] without any parameters.
+
+    EXEC [Partition].[MaintainPartitionBorders]
 
 <br/>
 <br/>
@@ -149,14 +167,17 @@ If you would like to load historical data to the database, then you should speci
 ### Define (default) behaviour of Measurand(s) ###
 The table [Core].[Signal] stores the list of all reference signals and they provide the context for all stored Measurement data. Beside of that context they also steer the behavior of the system via the values of the two attributes [UpdateLatestMeasurement] and [SetCreatedAt].
 
-- [Core].[LatestMeasurement] 
+![Core Signal](media/10_15_CoreSignalOptions.png)
+
+-  [UpdateLatestMeasurement] -> Update [Core].[LatestMeasurement] 
 <br/>
-The table [Core].[LatestMeasurement] stores the latest known value of a Signal. This is very useful if you build a dashboard on top of the database to visualize the current state. Maintaining this table generates additional work for the database. That's the reason why the feature is disabled per default. If the last value of a signal should be maintained in the table [Core].[LatestMeasurement], then the [UpdateLatestMeasurement] of the corresponding Signal in the table [Core].[Signal] must be set to 1 (true).
+The table [Core].[LatestMeasurement] stores the latest known value of a Signal. This is very useful if you build a dashboard on top of the database to visualize the current state. Maintaining this table generates additional work for the database. That's the reason why the feature is disabled per default. If the last value of a signal should be maintained in the table [Core].[LatestMeasurement], then the **[UpdateLatestMeasurement]** of the corresponding Signal in the table [Core].[Signal] must be set to 1 (true).
 Setting the attribute to 1 will not only change the attribute value but also add an entry in the [Core].[LatestMeasurement] table and scans [Core].[AllMeasurement] to find the last know value. If the database already contains a lot of rows, then this process can thake a while. For that reason it is recommended to change not a lot of records in one transaction. 
 <br/>
-- [Core].[Measurement<xyz>].[CreatedAt]
+
+- [SetCreatedAt] -> Set [Core].[Measurement\<xyz>].[CreatedAt]
 <br/>
-The attribute [CreatedAt] can optionally store the point in time when the record is stored in the database. If this information is stored with eache Measurement, then the required storage space witll grow, but it is possible to analyse the latency of the whole chain (Time between the event is generated and the time when it arrives in the database). Also this feature is per default disabled and it can be enabled by changing the value of the attribute [SetCreatedAt] in the table [Core].[Signal] to 1 (true).
+The attribute [CreatedAt] can optionally store the point in time when the record is stored in the database. If this information is stored with each Measurement, then the required storage space witll grow, but it is possible to analyse the latency of the whole chain (Time between the event is generated and the time when it arrives in the database). Also this feature is per default disabled and it can be enabled by changing the value of the attribute [SetCreatedAt] in the table [Core].[Signal] to 1 (true).
 <br/>
 
 If new signals are registered, then the values of [UpdateLatestMeasurement] and [SetCreatedAt] are 0 (false). If there are measurands for which you would like to change the default behaviour, then you do that by adding the measurand and the desired values for [UpdateLatestMeasurement] and [SetCreatedAt] in the table [Config].[SignalDefaultConfig].
@@ -172,14 +193,21 @@ If you don't have an existing Azure IoT hub with devices already generating even
 
 Open in the azure portal your Azure IoT hub and create a new device: 
 
+![Create Iot Device](media/20_10_CreateIotDevice.png)
 <br/>
+After the device creation click on the link of your new device and get the primary connection string. It will be required in the configuration of Raspberry Pi sample application
 <br/>
+![Primary connection string](media/20_20_GetConnectionString.png)
+<br/>
+
 
 ## Optionally: Configure the Raspberry Pi sample application ##
 
 https://azure-samples.github.io/raspberry-pi-web-simulator/
 
+![Raspberry Pi](media/30_10_RaspberryPi.png)
 
+<br/>
 
 
     /*
@@ -310,118 +338,15 @@ https://azure-samples.github.io/raspberry-pi-web-simulator/
 
 
 
-## Maintain the database ##
-
-
-### Add partitions for upcoming days ###
-
-If the system is up and running, then new data will arrive each day. To keep the system in an optimal state new partitions must be added. For that reason the stored procedure [Partition].[MaintainPartitionBorders] must be executed once a day.
-
-<br/> 
-
-Azure Data Factory or Azure Synapse pipelines can be used to schedule the execution. There is no need to specify any parameter to add additional partitions.
-
-<br/>
-<br/>
-
-### Remove index fragmentation ###
-
-The table [Core].[Measurement] is organised as a clustered index table on ([SignalId] ASC, [Ts] DESC, [Ts_Day] DESC). This allows very efficient queries that are looking for data of specific Signals [SignalId] and a time window.<br/>
-The issue is that data do not arrive in this order and for that reason the index gets immediately fragmented. The good thing is that data mainly arrives at the current day and that older partitions are more or less not modified. The stored procedure [Core].[RebuildFragmentedIndexes] detects fragmented partitions and rebuilds them in the background. The procedure should also be scheduled on a regular basis. In the ideal case at a time windows with minimal user activity on the system.
-<br/>
-<br/>
-<img src="media\10_21_RebuildFragmentedIndexes.png" width=1100 border=1px>
-10_21_RebuildFragmentedIndexes.png
-<br/>
-<br/>
-<br/>
-
-**Stored Procedure: [Core].[RebuildFragmentedIndexes]**
-
-Rebuilds the partitions of the Clustered Index on the [Core].[Measurement] table if the fragmentation is greater than the specified threshold and if the partition relates to a point in time between today -90 days and today -1 day.
-
-| Parameter | Data Type | Has<br>default<br>value | Default Value | Purpose |
-| :---      | :---:     | :---:                   | :---:         | :---     |
-|@FragmentationLimit|FLOAT|1|80| Threshold to determine if an index will be rebuild
-
-<br/>
-
-Azure Data Factory or Azure Synapse pipelines can be used to schedule the execution. There is no need to specify any parameter to add additional partitions.
-
-<br/>
-<br/>
-<br/>
-
-
-### Keep long history, use month partitions ###
-If you would like to store historical data for a longer period of time then it makes sense to switch from day partitions to month partitions. The stored procedure [Core].[OptimiseDataStorage] can be used to move data from the day partitions to the corresponding month.
-<br/>
-The table [Core].[Measurement] uses day partitions (ON [dayPartitionScheme] ([Ts_Day])) and it is organised as a clustered index table on ([SignalId] ASC, [Ts] DESC, [Ts_Day] DESC).
-On the other side, the table [Core].[MeasurementStore] uses the month partition schema (ON [monthPartitionScheme] ([Ts_Day])) and is organised as a clustered column store table.
-<br/>
-<br/>
-
-<img src="media\10_11_OptimiseDataStorage.png" width=1100 border=1px>
-10_11_OptimiseDataStorage.png
-<br/>
-<br/>
-<br/>
-
-**Stored Procedure: [Core].[OptimiseDataStorage]**
-
-The stored procedure moves data from the table [Core].[Measurement] (day partition) to the table [Core].[MeasurementStore] (month partition). If no parameters are supplied, then all data arrived two days before the actual day will be moved and the intermediate transfer table will be dropped after the successful transfer.
-
-| Parameter | Data Type | Has<br>default<br>value | Default Value | Purpose |
-| :---      | :---:     | :---:                   | :---:         | :---     |
-|@MeasureMonthLowWaterMark|DATETIME2(0)|1|1900-01-01| Start "Ts_Day" 'YYYY-MM-DD' value. <br/>Defines the lower boundary from where the optimization starts. The comparison is done using >= logic.
-|@MeasureMonthHighWaterMark	|	DATETIME2(0)	|	1	|	9999-12-31	| End "Ts_Day" 'YYYY-MM-DD' value. <br/>Defines the upper boundary from where the optimization starts. The comparison is done using <= logic
-|@DropHistoryTable	|	BIT	|	1	|	1	| During the optimization process data is switched out to an intermediate/history table. If the parameter is set to 0 then the switch out table will not be deleted. Otherwise the procedure cleans it up. |
-
-<br/>
-
-Data of the actual day and the day bevore will always be kept in tha table [Core].[Measurement]
-
-<br/>
-Azure Data Factory or Azure Synapse pipelines can be used to schedule the execution. There is no need to specify any parameter to add additional partitions.
-
-<br/>
-<br/>
-<br/>
-<br/>
-
-### Remove data from the system ###
-
-Over time the data volume of the database will grow. The stored procedure [Partition].[RemoveDataPartitionsFromTable] can be used to remove data in an efficient way.
-The parameter @PreserveSwitchOutTable defines if the switched out data should be kept in the target table or if it should be dropped.
-<br/>
-<br/>
-
-**Stored Procedure: [Partition].[RemoveDataPartitionsFromTable]**
-
-Removes partitions from the specified table
-
-| Parameter | Data Type | Has<br>default<br>value | Default Value | Purpose |
-| :---      | :---:     | :---:                   | :---:         | :---     |
-|@SchemaName|SYSNAME|0|| Schema name of the source table ('Core').
-|@TableName|SYSNAME|0|| Table name of the source table. Either 'Measurement' or 'MeasurementStore'
-|@TS_Day_LowWaterMark|DATE|0|| Lower boundary of data, Ts_Day in format 'YYYY-MM-DD', Including this day, compared with >=
-|@TS_Day_HighWaterMark|DATE|0|| Upper boundary of data, Ts_Day in format 'YYYY-MM-DD', Including this day, compared with <=
-|@PreserveSwitchOutTable|TINYINT|1|0| Data is removed form the table using a switch operation. If this parameter is set to one, then the switch out table will not be deleted. Otherwise the switch out table will be deleted.
-
-<br/>
-
-Azure Data Factory or Azure Synapse pipelines can be used to schedule the execution of the maintenance stored procedures. 
-
-<br/>
-<br/>
-<br/>
-
-
 ## Modify Stream Analytics project ##
 
 ### Configure Stream Analytics Storage Account ###
 
-Stream Analytics needs a storage account to get reference data from SQL Server. The definition of the storage acccount is stored in the file JobConfig.json. The storage account definitions are located in the [Global Storage Settings] tab.
+Stream Analytics needs a storage account to get reference data from SQL Server. The definition of the storage acccount is stored in the file **JobConfig.json**. The storage account definitions are located in the [Global Storage Settings] tab.
+
+![Global Storage Settings](media/40_10_GlobalStorageSettings.png)
+
+<br/>
 
 ### Define connection information of Inputs ###
 
@@ -429,17 +354,29 @@ The following tho inputs must be adjusted to your environment: CoreSignal, IoTDa
 
 #### CoreSignal ####
 
-Define the connection to your SQL Server using the user ASA_MetaDataReader. You can switch to the managed identity, as soon as the solution is deployed to Stream Analytics
+Define the connection to your SQL Server using the user ASA_MetaDataReader. You can switch to the managed identity, as soon as the solution is deployed to Stream Analytics.
+
+![Signal Meta Data](media/40_20_SignalMetaData.png)
 
 #### IoTDataInput ####
 
 Define the connection to your IoTHub
+
+![IoT Data Input](media/40_30_IoTDataInput.png)
+
+<br/>
+<br/>
 
 ### Define connection information of Outputs ###
 
 The following tho outputs must be adjusted to your environment: Measurement, MeasurementWithSignalName, MeasurementWrongMessageFormatOrDataType
 
 Specify the connection string to your database server and specify the user ASA_TelemetryWriter while you are using visual studio to test. After deploying the solution to stream Analytics you can change it to the managed identity.
+
+![Measurement](media/40_40_Measurement.png)
+
+<br/>
+<br/>
 
 ### Adjust the Stream Analytics Query ###
 
@@ -453,49 +390,80 @@ If you are using the Raspberry Pi sample application to generate the IoT events,
 
     -- Begin of section to be adjusted
 
-      WITH ParsedMessage
-      AS
-      (
-        SELECT
-           IotDataInput.deviceId
-          ,IotDataInput.eventTimestamp
-          ,Property.propertyName                         AS Measurand
-          ,Property.propertyValue                        AS MeasurementValue
-        ,IotDataInput
-          FROM [IotDataInput]
-          CROSS APPLY GetRecordProperties(IotDataInput)   AS Property
-          WHERE Property.propertyname = 'temperature'
-            OR Property.propertyname = 'humidity'
-      
-      )
-      
-      ,IoTDataInputWithSignalName  
-      AS
-      (
-      
-        SELECT 
-          TRY_CAST(eventTimestamp AS DATETIME)                            AS [Ts]
-          ,deviceId                                                       AS [DeviceId]
-          ,Measurand                                                      AS [Measurand]
-          ,CONCAT(deviceId, '_', Measurand)                               AS [SignalName]
-          ,TRY_CAST([MeasurementValue] AS FLOAT)                          AS [MeasurementValue]
-          ,CASE WHEN LEN([MeasurementValue]) > 0 
-                  AND TRY_CAST([MeasurementValue] AS FLOAT) IS NULL 
-                                                  THEN [MeasurementValue]  
-                                        ELSE NULL 
-            END                                                            AS [MeasurementText]
-          ,eventTimestamp                                                 AS [SourceTS]
-          ,[MeasurementValue]                                             AS [SourceMeasurementValue]
-          ,[MeasurementValue]                                             AS [SourceMeasurementText]
-          
-          ,IotDataInput                                                   AS [SourceMessage]
-        FROM [ParsedMessage]
-      )
+    WITH ParsedMessage
+    AS
+    (
+      SELECT
+        IotDataInput.IoTHub.ConnectionDeviceId          AS DeviceId
+        ,IotDataInput.eventTimestamp
+        ,Property.propertyName                         AS Measurand
+        ,Property.propertyValue                        AS MeasurementValue
+      ,IotDataInput
+        FROM  [IotDataInput]
+        CROSS APPLY GetRecordProperties(IotDataInput)   AS Property
+        WHERE Property.propertyname = 'temperature'
+          OR Property.propertyname = 'humidity'
+    
+    )
+    
+    ,IoTDataInputWithSignalName  
+    AS
+    (
+    
+      SELECT 
+        TRY_CAST(eventTimestamp AS DATETIME)                            AS [Ts]
+        ,DeviceId                                                       AS [DeviceId]
+        ,Measurand                                                      AS [Measurand]
+        ,CONCAT(DeviceId, '_', Measurand)                               AS [SignalName]
+        ,TRY_CAST([MeasurementValue] AS FLOAT)                          AS [MeasurementValue]
+        ,CASE WHEN TRY_CAST([MeasurementValue] AS FLOAT) IS NULL 
+                                                THEN [MeasurementValue]  
+                                      ELSE NULL 
+          END                                                            AS [MeasurementText]
+        ,eventTimestamp                                                 AS [SourceTS]
+        ,[MeasurementValue]                                             AS [SourceMeasurementValue]
+        ,[MeasurementValue]                                             AS [SourceMeasurementText]
+        
+        ,IotDataInput                                                   AS [SourceMessage]
+      FROM [ParsedMessage]
+    )
 
     -- End of section to be adjusted
 
 
-    ### Submit the Strem Analytics project to Azrue ###
+### Test the Strem Analytics query ###
+
+Visual Studio allow you to test the solution. If you would like to test it with real telemetry data then start your Raspberry Pi application and use [Run Locally] with the following settings.
+
+![Run locally](media/50_10_RunLocal.png)
+
+After a few seconds you will see the following window. The warning is expected, because currently there are no signals registered in the database. They will be registered automatically, as soon as we feed data to the database.
+
+![No signal warning](media/50_20_NoSignalWarning.png)
+
+As soon as the job is running, you can see the some key counters.
+![Key counters](media/50_30_KeyCounters.png)
+
+And the [Stream Analytics Local Run Results] shows you the exposed dataset
+![Local run results](media/50_40_LocalRunResults.png)
+
+<br/>
+
+### Submit the Strem Analytics project to Azrue ###
+
+The last step is to deploy the solution to Azrue using the [Submit to Azure] button. Just select the deployed Stream Analytics job name and press the [Submit] button.
+
+![Submit to Azure](media/50_50_SubmitToAzure.png)
+
+<br/>
+
+After you submitted the job to Azure you must start it. This can be done either directly in Visual Studio:
+
+![Start in Visual Studio](media/50_60_StartInVisualStudion.png)
+
+Or in the Azure portal.
+
+![Start in Portal](media/50_65_StartInPortal.png)
 
 ## Test your system ##
 
@@ -504,3 +472,11 @@ Make sure that events are submitted to your IotHub. If your are using the Raspbe
 Execute in your SQL Server database the stored proecdure [Core].[GetOverviewOfDataInDatabase]<br/>
 
     exec [Core].[GetOverviewOfDataInDatabase]
+
+![Test data in Azure](media/60_10_TestDataInSQL.png)
+
+
+## Setup Database Maintenance Jobs ##
+
+To keep the system at an optimal performance there is some house keeping required. You find more details in the following document. [MaintainDatabase](TsSmartSqlStore2_20_MaintainDatabase.md)
+

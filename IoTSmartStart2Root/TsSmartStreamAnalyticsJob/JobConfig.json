@@ -9,7 +9,7 @@
   "CompatibilityLevel": "1.2",
   "UseSystemAssignedIdentity": false,
   "GlobalStorage": {
-    "AccountName": "aaadeletemewstorage",
+    "AccountName": "aach4iot4wsxxxstorage",
     "AccountKey": null,
     "AuthenticationMode": "ConnectionString"
   },
@@ -21,6 +21,6 @@
   },
   "ContentStoragePolicy": "SystemAccount",
   "UploadFromLocal": true,
-  "DataSourceCredentialDomain": "ecb59bbd-9022-4a41-8ca2-ad2163ba6d23.StreamAnalystics",
+  "DataSourceCredentialDomain": "a74d13a4-d268-4183-b1da-10439b81b24d.StreamAnalystics",
   "Tags": {}
 }
