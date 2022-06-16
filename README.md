@@ -7,9 +7,24 @@ Documentation
 - [API reference](IoTSmartStart2Root/docs/TsSmartSqlStore2_90_API.md)
 - [Table/View reference](IoTSmartStart2Root/docs/TsSmartSqlStore2_95_Table.md)
 
-Contribute
+# Contribute
 
-This section describes how to contribute to this project.
+You are more than welcome to contribute to this project. To do so please follow the instructions below.
+
+Use ```git fork``` to create a copy of this repository in your own account.
+
+For detailed instructions, please follow this tutorial:
+
+[Fork a Repo](https://docs.github.com/en/get-started/quickstart/fork-a-repo)
+
+Once you have implemented and tested your contribution, please create a pull request and we will review the potential changes.
+
+A detailed tutorial can be found here:
+
+[Create a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request)
+
+
+
 
 
 
