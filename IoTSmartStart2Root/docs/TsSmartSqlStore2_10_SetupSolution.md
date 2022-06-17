@@ -24,7 +24,7 @@ IoT solutions using Azure IoT Hub, Azure Stream Analytics and Azure SQL
     - [Define connection information of Outputs](#define-connection-information-of-outputs)
     - [Adjust the Stream Analytics Query](#adjust-the-stream-analytics-query)
     - [Test the Strem Analytics query](#test-the-strem-analytics-query)
-    - [Submit the Strem Analytics project to Azrue](#submit-the-strem-analytics-project-to-azrue)
+    - [Submit the Strem Analytics project to Azure](#submit-the-strem-analytics-project-to-azure)
   - [Test your system](#test-your-system)
   - [Setup Database Maintenance Jobs](#setup-database-maintenance-jobs)
 
@@ -38,7 +38,7 @@ The following steps are required to setup the solution:
 - Get access to the code
 - Install Azure Services (Azure Stream Analytics and Azure SQL Database)
 - Deploy SQL Database schema
-- Initialise partitions
+- Initialize partitions
 - Deploy Stream Analytics Jobs
 
 After the initial setup some maintenance activities should be executed to keep the system in an optimal shape.
@@ -51,7 +51,7 @@ When using Visual Studio 2019 make sure the following toolset is installed:
 
 ![Visual Studio 2019 Packages](media/vs_packages2019.png)
 
-When using Viusl Studio 2022 make sure the following packages are installed:
+When using Viusal Studio 2022 make sure the following packages are installed:
 
 ![Visual Studio 2022 Packages](media/vs_packages2022.png)
 
@@ -449,9 +449,9 @@ And the [Stream Analytics Local Run Results] shows you the exposed dataset
 
 <br/>
 
-### Submit the Strem Analytics project to Azrue ###
+### Submit the Strem Analytics project to Azure ###
 
-The last step is to deploy the solution to Azrue using the [Submit to Azure] button. Just select the deployed Stream Analytics job name and press the [Submit] button.
+The last step is to deploy the solution to Azure using the [Submit to Azure] button. Just select the deployed Stream Analytics job name and press the [Submit] button.
 
 ![Submit to Azure](media/50_50_SubmitToAzure.png)
 
@@ -467,7 +467,7 @@ Or in the Azure portal.
 
 ## Test your system ##
 
-Make sure that events are submitted to your IotHub. If your are using the Raspberry Pi sample application, then press run
+Make sure that events are submitted to your IotHub. If you are using the Raspberry Pi sample application, then press run
 
 Execute in your SQL Server database the stored proecdure [Core].[GetOverviewOfDataInDatabase]<br/>
 
@@ -478,5 +478,5 @@ Execute in your SQL Server database the stored proecdure [Core].[GetOverviewOfDa
 
 ## Setup Database Maintenance Jobs ##
 
-To keep the system at an optimal performance there is some house keeping required. You find more details in the following document. [MaintainDatabase](TsSmartSqlStore2_20_MaintainDatabase.md)
+To keep the system at an optimal performance there is some housekeeping required. You find more details in the following document. [MaintainDatabase](TsSmartSqlStore2_20_MaintainDatabase.md)
 
