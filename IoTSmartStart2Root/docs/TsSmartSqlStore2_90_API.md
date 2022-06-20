@@ -132,7 +132,7 @@ Simple way to read data from the database by just providing a SignalId and a tim
 
 ### Funtion: [Mart].[GetMeasurementForRelativeTimeWindow] ###
 
-Funtion to specify a relative time window and the desired time zone of the resultset.
+Function to specify a relative time window and the desired time zone of the result set.
   * Supported window sizes
     * 'MINUTE'
     * 'HOUR'

@@ -5,9 +5,9 @@ Query - IoT solutions using Azure IoT Hub, Azure Stream Analytics and Azure SQL
 
 - [Query - IoT solutions using Azure IoT Hub, Azure Stream Analytics and Azure SQL](#query---iot-solutions-using-azure-iot-hub-azure-stream-analytics-and-azure-sql)
 - [Querying the database](#querying-the-database)
-  - [Otimal SQL queries](#otimal-sql-queries)
+  - [Optimal SQL queries](#optimal-sql-queries)
   - [Relative time windows, time zone selection and Power BI dynamic M parameter support](#relative-time-windows-time-zone-selection-and-power-bi-dynamic-m-parameter-support)
-  - [Power BI hybird tables](#power-bi-hybird-tables)
+  - [Power BI hybrid tables](#power-bi-hybrid-tables)
 
 
 <br/>
@@ -15,15 +15,15 @@ Query - IoT solutions using Azure IoT Hub, Azure Stream Analytics and Azure SQL
 
 # Querying the database # 
 
-## Otimal SQL queries ##
+## Optimal SQL queries ##
 
 Most of the queries sent to an IoT database are looking for Measurement values for a specific Signal and a specified time window. 
 If the where condition of the SQL query filters on Ts_day, then SQL Server has the option to do partition elimination and to speed up query processing. 
 A query which specifies the concrete time window and the corresponding filter on Ts_Day may look like this.
 
     declare @FromTs   DATETIME = '2021-12-11 12:37:57.119'
-          ,@ToTs     DATETIME = '2021-12-11 13:37:57.119'
-          ,@SignalId INT       = 1
+           ,@ToTs     DATETIME = '2021-12-11 13:37:57.119'
+           ,@SignalId INT       = 1
 
 
     SELECT *
@@ -142,13 +142,13 @@ This function can also be used in conjunction with Power BI and dynamic M parame
     from [GetMeasurement]
 
 
-## Power BI hybird tables ##
+## Power BI hybrid tables ##
 
-Hybrid tables allow you to have historical data loaded to the Power BI dataset and using direct query to get reatime data. 
+Hybrid tables allow you to have historical data loaded to the Power BI dataset and using direct query to get real-time data. 
 
 [Hybrid Tables in Power BI Premium](https://powerbi.microsoft.com/en-my/blog/announcing-public-preview-of-hybrid-tables-in-power-bi-premium/)
 
-![Hybird table](media/80_10_HybridTablesPowerBI.gif)
+![Hybrid table](media/80_10_HybridTablesPowerBI.gif)
 
 Hybrid tables in Power BI Premium offers the following benefits:
 
@@ -159,4 +159,4 @@ Hybrid tables in Power BI Premium offers the following benefits:
 
 <br/>
 
-The attributte [Ts_Day] can be used slice the data to the corresponding partitions. It is the partition key attriubte and allow SQL Server to select the data in an efficient way.
+The attribute [Ts_Day] can be used slice the data to the corresponding partitions. It is the partition key attribute and allow SQL Server to select the data in an efficient way.

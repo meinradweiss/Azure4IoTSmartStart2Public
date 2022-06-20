@@ -51,7 +51,7 @@ When using Visual Studio 2019 make sure the following toolset is installed:
 
 ![Visual Studio 2019 Packages](media/vs_packages2019.png)
 
-When using Viusal Studio 2022 make sure the following packages are installed:
+When using Visual Studio 2022 make sure the following packages are installed:
 
 ![Visual Studio 2022 Packages](media/vs_packages2022.png)
 
@@ -61,13 +61,13 @@ This chapter describes how to deploy the source code into the created Azure comp
 
 Before starting with the deployment, please make sure that the Azure services have been deployed and the necessary tool pre-requisites have been installed on your local machine.
 
-Clone the following github repository to your local computer:
+Clone the following GitHub repository to your local computer:
 
 ```
 git clone https://github.com/meinradweiss/Azure4IoTSmartStart2Public
 ```
 
-**The github repository is currently private, please reach out to the repository owner to get access.**
+**The GitHub repository is currently private, please reach out to the repository owner to get access.**
 
 # Install Azure Services #
 
@@ -120,7 +120,7 @@ Create the database user(s) to allow Azure Stream Analytics to connect to the da
 
 The recommended way is to work with the managed identity of Stream Analytics. But currently Visual Studio does not allow to use managed identities in the project file. You can change the connection properties after deploying the solution to Azure.
 
-If you would like to setup SQL users based on the managed identiy, then you must login to the SQL database with an Azure AD user identity. This requires, that you are either Azure Active Directory admin on your database server or that some created a user with your Azure AD indentity.
+If you would like to setup SQL users based on the managed identity, then you must login to the SQL database with an Azure AD user identity. This requires, that you are either Azure Active Directory admin on your database server or that some created a user with your Azure AD identity.
 
     -- Managed Identity
     CREATE USER [aaadeletemewstreamanalytics] FROM EXTERNAL PROVIDER; 
@@ -165,7 +165,7 @@ Otherwise, if you work on a new project and you are collecting data starting fro
 
 
 ### Define (default) behaviour of Measurand(s) ###
-The table [Core].[Signal] stores the list of all reference signals and they provide the context for all stored Measurement data. Beside of that context they also steer the behavior of the system via the values of the two attributes [UpdateLatestMeasurement] and [SetCreatedAt].
+The table [Core].[Signal] stores the list of all reference signals and they provide the context for all stored Measurement data. Beside of that context they also steer the behaviour of the system via the values of the two attributes [UpdateLatestMeasurement] and [SetCreatedAt].
 
 ![Core Signal](media/10_15_CoreSignalOptions.png)
 
@@ -342,7 +342,7 @@ https://azure-samples.github.io/raspberry-pi-web-simulator/
 
 ### Configure Stream Analytics Storage Account ###
 
-Stream Analytics needs a storage account to get reference data from SQL Server. The definition of the storage acccount is stored in the file **JobConfig.json**. The storage account definitions are located in the [Global Storage Settings] tab.
+Stream Analytics needs a storage account to get reference data from SQL Server. The definition of the storage account is stored in the file **JobConfig.json**. The storage account definitions are located in the [Global Storage Settings] tab.
 
 ![Global Storage Settings](media/40_10_GlobalStorageSettings.png)
 
@@ -380,7 +380,7 @@ Specify the connection string to your database server and specify the user ASA_T
 
 ### Adjust the Stream Analytics Query ###
 
-Modify the query,that it fits to your message. You only need to adjust the piece in the block 'section to be adjusted'
+Modify the query, that it fits to your message. You only need to adjust the piece in the block 'section to be adjusted'
 
 <br/>
 
@@ -396,7 +396,7 @@ Modify the query,that it fits to your message. You only need to adjust the piece
 | SourceTS | Original value of the attribute which is used to get the attribute Ts from. No conversation to a data time data type is applied. -> useful to debug query. | |
  | SourceMeasurementValue | Original value of the attribute which is used to get the attribute  MeasurementValue from. No conversation to a numeric type is applied. -> useful to debug query. | |
 | SourceMeasurementText | Original value of the attribute which is used to get the attribute  Measurementtext from. -> useful to debug query. | |
-| SourceMessage | Whole message used to get the described attribute above. -> useful to debug query. If the orignal message is duplicated using a cross apply funtion then the result set may be huge and in this case it's better to provide just a null value. | |
+| SourceMessage | Whole message used to get the described attribute above. -> useful to debug query. If the original message is duplicated using a cross apply function then the result set may be huge and in this case it's better to provide just a null value. | |
 
 <br/>
 
@@ -429,7 +429,7 @@ JSON message of Raspberry Pi sample application arriving in Stream Analytics
     ]
 
 
-There is a Github sample project (https://github.com/meinradweiss/StreamAnalyticsQuery) that may be helpful if you would like to parse your own messages.
+There is a GitHub sample project (https://github.com/meinradweiss/StreamAnalyticsQuery) that may be helpful if you would like to parse your own messages.
 
 
 
