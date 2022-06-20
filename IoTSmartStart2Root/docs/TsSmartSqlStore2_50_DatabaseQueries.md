@@ -142,6 +142,16 @@ This function can also be used in conjunction with Power BI and dynamic M parame
     from [GetMeasurement]
 
 
+This Power BI sample report shows how the time window can be selected via Filters and how the time zone can be adjusted.
+
+Western Europe Standard Time
+![Power BI Report Western Europe Time](media/80_01_PowerBiDynamicM01.png)
+
+Eastern Europe Standard Time
+![Power BI Report Eastern Europe Time](media/80_01_PowerBiDynamicM02.png)
+
+
+
 ## Power BI hybrid tables ##
 
 Hybrid tables allow you to have historical data loaded to the Power BI dataset and using direct query to get real-time data. 
