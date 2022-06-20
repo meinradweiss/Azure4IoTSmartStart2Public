@@ -1,9 +1,9 @@
-IoT solutions using Azure IoT Hub, Azure Stream Analytics and Azure SQL
+Maintain - IoT solutions using Azure IoT Hub, Azure Stream Analytics and Azure SQL
 =======================================================================
 <br/>
 
 
-- [IoT solutions using Azure IoT Hub, Azure Stream Analytics and Azure SQL](#iot-solutions-using-azure-iot-hub-azure-stream-analytics-and-azure-sql)
+- [Maintain - IoT solutions using Azure IoT Hub, Azure Stream Analytics and Azure SQL](#maintain---iot-solutions-using-azure-iot-hub-azure-stream-analytics-and-azure-sql)
   - [Maintain the database](#maintain-the-database)
     - [Add partitions for upcoming days](#add-partitions-for-upcoming-days)
     - [Remove index fragmentation](#remove-index-fragmentation)

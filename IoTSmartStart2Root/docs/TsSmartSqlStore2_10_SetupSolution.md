@@ -1,9 +1,9 @@
-IoT solutions using Azure IoT Hub, Azure Stream Analytics and Azure SQL
+Setup - IoT solutions using Azure IoT Hub, Azure Stream Analytics and Azure SQL
 =======================================================================
 <br/>
 
 
-- [IoT solutions using Azure IoT Hub, Azure Stream Analytics and Azure SQL](#iot-solutions-using-azure-iot-hub-azure-stream-analytics-and-azure-sql)
+- [Setup - IoT solutions using Azure IoT Hub, Azure Stream Analytics and Azure SQL](#setup---iot-solutions-using-azure-iot-hub-azure-stream-analytics-and-azure-sql)
 - [Setup and operate the solution](#setup-and-operate-the-solution)
 - [Development environment](#development-environment)
 - [Get access to the code](#get-access-to-the-code)
@@ -384,7 +384,52 @@ Modify the query,that it fits to your message. You only need to adjust the piece
 
 <br/>
 
-If you are using the Raspberry Pi sample application to generate the IoT events, then you can use the following script to parse the message. There is a Github sample project (https://github.com/meinradweiss/StreamAnalyticsQuery) that may be helpful if you would like to parse your own messages.
+
+| Column | Purpose | Example |
+| :---      |  :--- | :-- | 
+| Ts | Timestamp of the point in time, when the event happend. The value should using UTC. | |
+| DeviceId | Name of the device sending the event | Device01 |
+| Measurand | Name of the object/property measured | Temperatur |
+| SignalName | String that identifies a signal. Concatination of DeviceId and "_" and Measurand | Device01_Temperatur |
+| MeasurementValue | Numeric value of the measurement (integer and floating point) | 23.56 |
+| MeasurementText | Alphanumeric value of the measurement | closed |
+| SourceTS | Original value of the attribute which is used to get the attribute Ts from. No conversation to a data time data type is applied. -> useful to debug query. | |
+ | SourceMeasurementValue | Original value of the attribute which is used to get the attribute  MeasurementValue from. No conversation to a numeric type is applied. -> useful to debug query. | |
+| SourceMeasurementText | Original value of the attribute which is used to get the attribute  Measurementtext from. -> useful to debug query. | |
+| SourceMessage | Whole message used to get the described attribute above. -> useful to debug query. If the orignal message is duplicated using a cross apply funtion then the result set may be huge and in this case it's better to provide just a null value. | |
+
+<br/>
+
+
+
+If you are using the Raspberry Pi sample application to generate the IoT events, then you can use the following script to parse the message. 
+
+
+JSON message of Raspberry Pi sample application arriving in Stream Analytics
+
+    [
+      {
+        "messageId": 28,
+        "deviceId": "Raspberry Pi Web Client",
+        "temperature": 30.873242697428207,
+        "humidity": 64.30382371344649,
+        "eventTimestamp": "2022-06-19T15:15:11.828Z",
+        "EventProcessedUtcTime": "2022-06-19T15:18:00.2546003Z",
+        "PartitionId": 1,
+        "EventEnqueuedUtcTime": "2022-06-19T15:15:12.1430000Z",
+        "IoTHub": {
+          "MessageId": null,
+          "CorrelationId": null,
+          "ConnectionDeviceId": "MySampleDevice001",
+          "ConnectionDeviceGenerationId": "637912483866782845",
+          "EnqueuedTime": "2022-06-19T15:15:12.1520000Z"
+        }
+      },
+    …
+    ]
+
+
+There is a Github sample project (https://github.com/meinradweiss/StreamAnalyticsQuery) that may be helpful if you would like to parse your own messages.
 
 
 
@@ -479,4 +524,5 @@ Execute in your SQL Server database the stored proecdure [Core].[GetOverviewOfDa
 ## Setup Database Maintenance Jobs ##
 
 To keep the system at an optimal performance there is some housekeeping required. You find more details in the following document. [MaintainDatabase](TsSmartSqlStore2_20_MaintainDatabase.md)
+
 

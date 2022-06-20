@@ -1,5 +1,26 @@
-IoT solutions using Azure IoT Hub, Azure Stream Analytics and Azure SQL
+API - IoT solutions using Azure IoT Hub, Azure Stream Analytics and Azure SQL
 =======================================================================
+
+
+<br/>
+
+- [API - IoT solutions using Azure IoT Hub, Azure Stream Analytics and Azure SQL](#api---iot-solutions-using-azure-iot-hub-azure-stream-analytics-and-azure-sql)
+- [API: Stored Procedures, Views and Functions](#api-stored-procedures-views-and-functions)
+  - [Initial system setup and regular system maintenance](#initial-system-setup-and-regular-system-maintenance)
+    - [Stored Procedure: \[Partition\].\[MaintainPartitionBorders\]](#stored-procedure-partitionmaintainpartitionborders)
+    - [Stored Procedure: \[Core\].\[OptimiseDataStorage\]](#stored-procedure-coreoptimisedatastorage)
+    - [Stored Procedure: \[Core\].\[RebuildFragmentedIndexes\]](#stored-procedure-corerebuildfragmentedindexes)
+    - [Stored Procedure: \[Partition\].\[RemoveDataPartitionsFromTable\]](#stored-procedure-partitionremovedatapartitionsfromtable)
+  - [Control Activites](#control-activites)
+    - [Stored Procedure: \[Core\].\[GetOverviewOfDataInDatabase\]](#stored-procedure-coregetoverviewofdataindatabase)
+    - [View: Logging.LogInfo](#view-loggingloginfo)
+  - [Data extraction](#data-extraction)
+    - [Function: \[Mart\].\[GetMeasurementForSignal\]](#function-martgetmeasurementforsignal)
+    - [Funtion: \[Mart\].\[GetMeasurementForRelativeTimeWindow\]](#funtion-martgetmeasurementforrelativetimewindow)
+
+
+<br/>
+
 
 
 # API: Stored Procedures, Views and Functions
@@ -16,8 +37,10 @@ The following Stored Procedures, Views and Functions act as the API's to the sys
 <br/>
 <br/>
 
+## Initial system setup and regular system maintenance ##
 
-** Stored Procedure: [Partition].[MaintainPartitionBorders] **
+### Stored Procedure: [Partition].[MaintainPartitionBorders] ###
+
 
 Creates "empty" partitions for dayPartion Schema/Function and also for the monthPartition Schema/Function. If no parameters are provided, then it will start with the first day of the current month and create partitions for this and the following month.
 
@@ -31,7 +54,7 @@ Creates "empty" partitions for dayPartion Schema/Function and also for the month
 <br/>
 <br/>
 
-** Stored Procedure: [Core].[OptimiseDataStorage] **
+### Stored Procedure: [Core].[OptimiseDataStorage] ###
 
 The stored procedure moves data from the table [Core].[Measurement] (day partition) to the table [Core].[MeasurementStore] (month partition). If no parameters are supplied, then all data arrived two days before the actual day will be moved and the intermediate transfer table will be dropped after the successful transfer.
 
@@ -50,7 +73,7 @@ The stored procedure moves data from the table [Core].[Measurement] (day partiti
 <br/>
 
 
-** Stored Procedure: [Core].[RebuildFragmentedIndexes] **
+### Stored Procedure: [Core].[RebuildFragmentedIndexes] ###
 
 Rebuilds the partitions of the Clustered Index on the [Core].[Measurement] table if the fragmentation is greater than the specified threshold and if the partition relates to a point in time between today -90 days and today -1 day.
 
@@ -65,7 +88,7 @@ Rebuilds the partitions of the Clustered Index on the [Core].[Measurement] table
 <br/>
 <br/>
 
-** Stored Procedure: [Partition].[RemoveDataPartitionsFromTable] **
+### Stored Procedure: [Partition].[RemoveDataPartitionsFromTable] ###
 
 Removes partitions from the specified table
 
@@ -78,4 +101,41 @@ Removes partitions from the specified table
 |@TS_Day_HighWaterMark|DATE|0|| Upper boundary of data, Ts_Day in format 'YYYY-MM-DD', Including this day, compared with <=
 |@PreserveSwitchOutTable|TINYINT|1|0| Data is removed form the table using a switch operation. If this parameter is set to 1, then the switch out table will not be deleted. Otherwise the switch out table will be deleted.
 
+<br/>
+<br/>
 
+
+## Control Activites ##
+
+<br/>
+
+### Stored Procedure: [Core].[GetOverviewOfDataInDatabase] ###
+
+This stored procedure provides an overview of the content in the most important objects.
+
+### View: Logging.LogInfo  ###
+
+This view provides the list of maintenance activities which have been executed on the system
+
+<br/>
+<br/>
+
+## Data extraction ##
+
+<br/>
+
+### Function: [Mart].[GetMeasurementForSignal] ###
+
+Simple way to read data from the database by just providing a SignalId and a time window definition. The function extracts the Ts_Day part of the time window borders and applies the necessary addition filter criteria.
+
+<br/>
+
+### Funtion: [Mart].[GetMeasurementForRelativeTimeWindow] ###
+
+Funtion to specify a relative time window and the desired time zone of the resultset.
+  * Supported window sizes
+    * 'MINUTE'
+    * 'HOUR'
+    * 'DAY'
+    * 'MONTH'
+    * 'YEAR' 

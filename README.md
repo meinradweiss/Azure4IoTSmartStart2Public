@@ -3,7 +3,9 @@
 Documentation
 
 - [Solution overview](IoTSmartStart2Root/docs/TsSmartSqlStore2.md)
-- [Setup solution and operate the solution](IoTSmartStart2Root/docs/TsSmartSqlStore2_10_SetupSolution.md)
+- [Setup solution](IoTSmartStart2Root/docs/TsSmartSqlStore2_10_SetupSolution.md)
+- [Maintain solution](IoTSmartStart2Root/docs/TsSmartSqlStore2_20_MaintainDatabase.md)
+- [Querying data](IoTSmartStart2Root/docs/TsSmartSqlStore2_50_DatabaseQueries.md)
 - [API reference](IoTSmartStart2Root/docs/TsSmartSqlStore2_90_API.md)
 - [Table/View reference](IoTSmartStart2Root/docs/TsSmartSqlStore2_95_Table.md)
 
