@@ -48,7 +48,7 @@ BEGIN
     FROM   [TsHelper].[LastKnownMeasurementPerHour] MaxLastKnownMeasurementPerHour
     WHERE   MaxLastKnownMeasurementPerHour.SignalId =  @SignalId
   	  AND   Ts                                      >= @LastKnowTsAtOrLowerFromTs
-	  AND   Ts_Day                                  >= CONVERT(DATE, @LastKnowTsAtOrLowerFromTs)
+	  AND   Ts_Day                                  >= CONVERT(DATETIME2(0), CONVERT(DATE, @LastKnowTsAtOrLowerFromTs))
 	  AND   Ts                                      <= @ToTs
 	  AND   Ts_Day                                  <= @ToTs_Day
 

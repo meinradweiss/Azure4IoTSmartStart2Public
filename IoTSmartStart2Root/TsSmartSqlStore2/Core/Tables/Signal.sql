@@ -58,9 +58,9 @@ CREATE TRIGGER [Core].[CoreSignal_IU]
         			  INNER JOIN (SELECT [SignalId], MAX(Ts) as [LastTimestamp]
         			              FROM [Core].[Measurement]
         			              GROUP BY [SignalId]) AS [LastMeasurement]
-        			  ON [Measurement].[SignalId] = [LastMeasurement].[SignalId]
-        			  AND [Measurement].[Ts] = [LastMeasurement].[LastTimestamp]
-        			  AND [Measurement].[Ts_Day]   = CONVERT(DATE, LastMeasurement.[LastTimestamp])
+        			  ON [Measurement].[SignalId]  = [LastMeasurement].[SignalId]
+        			  AND [Measurement].[Ts]       = [LastMeasurement].[LastTimestamp]
+        			  AND [Measurement].[Ts_Day]   = CONVERT(DATETIME2(0), CONVERT(DATE, LastMeasurement.[LastTimestamp]))
                    ) AS [LatestArrivedMeasurement]
         ON [LatestMeasurement].[SignalId] = [LatestArrivedMeasurement].[SignalId]
 

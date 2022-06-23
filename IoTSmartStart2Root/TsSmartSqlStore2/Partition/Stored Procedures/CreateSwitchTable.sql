@@ -57,7 +57,7 @@ BEGIN
   SET @CreateTableSQL = CONCAT(
   'CREATE TABLE ', @FullTableNameSQL,' (
     [Ts]               DATETIME2 (3) NOT NULL,
-    [Ts_Day]           DATE          NOT NULL,
+    [Ts_Day]           DATETIME2 (0) NOT NULL,
     [SignalId]         INT           NOT NULL,
     [MeasurementValue] REAL            NULL,
     [MeasurementText]  NVARCHAR (4000) NULL,

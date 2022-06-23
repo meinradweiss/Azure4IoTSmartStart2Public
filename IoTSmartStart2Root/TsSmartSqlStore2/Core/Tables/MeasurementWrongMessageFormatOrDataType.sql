@@ -7,8 +7,8 @@
     [SourceTS]                NVARCHAR (MAX)                      NULL,
     [SourceMeasurementValue]  NVARCHAR (MAX)                      NULL,
     [SourceMeasurementText]   NVARCHAR (MAX)                      NULL,
-    [SourceMessage]           NVARCHAR (MAX)                  NOT NULL,
-    [CreatedAt]               DATETIME2 (3) DEFAULT GETUTCDATE() NOT NULL
+    [SourceMessage]           NVARCHAR (MAX)                      NULL,
+    [CreatedAt]               DATETIME2 (3) DEFAULT GETUTCDATE()  NOT NULL
 );
 
 

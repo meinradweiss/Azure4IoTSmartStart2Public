@@ -44,7 +44,7 @@ BEGIN
     BEGIN
       EXEC [Helper].[Conditional_print] 'Old data in [Core].[MeasurementTransfer] pre processing necessary'
 
-      DECLARE @MinTs_DayOfTransfer DATE
+      DECLARE @MinTs_DayOfTransfer DATETIME2 (0)
 	         ,@CleanUpLastOptimiseRunStepId bigint
 
 
@@ -102,7 +102,7 @@ BEGIN
 
 	  /* Only empty partitions can be split in when a columnstore index exists on the table. To avoid this problem, data is only moved if
 	     there is a partition defined for the corresponding Ts_Day                                                                        */
-	  DECLARE @MaxPartitionBorder DATE
+	  DECLARE @MaxPartitionBorder DATETIME2 (0)
 
       SELECT @MaxPartitionBorder = MAX(CONVERT(DATE, FromValue))
       FROM [Partition].[PartitionRangeValues]

@@ -11,8 +11,8 @@ RETURN
   SELECT *
   FROM  [Core].[AllMeasurement]
   WHERE [SignalId] = @SignalId
-    AND [Ts_Day] >= CONVERT(DATE, @FromTs) 
-    AND [Ts_Day] <= CONVERT(DATE, @ToTs) 
+    AND [Ts_Day] >= CONVERT(DATETIME2(0), CONVERT(DATE, @FromTs)) 
+    AND [Ts_Day] <= CONVERT(DATETIME2(0), CONVERT(DATE, @ToTs)) 
     AND [Ts]     >= @FromTs
     AND [Ts]     <= @ToTs
 

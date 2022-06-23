@@ -9,7 +9,7 @@
   </SourceModelProvider>
   <TargetModelProvider>
     <ConnectionBasedModelProvider>
-      <ConnectionString>Data Source=aaadeletemewsqlserver.database.windows.net;Initial Catalog=aaadeletemewsqldb;Persist Security Info=False;User ID=meweiss@microsoft.com;Pooling=False;MultipleActiveResultSets=False;Connect Timeout=60;Encrypt=True;TrustServerCertificate=False;Authentication="Active Directory Interactive"</ConnectionString>
+      <ConnectionString>Data Source=aamewiotws01sqlserver.database.windows.net;Initial Catalog=aamewiotws01sqldb;Persist Security Info=False;User ID=meweiss@microsoft.com;Pooling=False;MultipleActiveResultSets=False;Connect Timeout=60;Encrypt=True;TrustServerCertificate=False;Authentication="Active Directory Interactive"</ConnectionString>
     </ConnectionBasedModelProvider>
   </TargetModelProvider>
   <SchemaCompareSettingsService>
@@ -334,11 +334,11 @@
       </PropertyElementName>
       <PropertyElementName>
         <Name>TargetDatabaseName</Name>
-        <Value>aaadeletemewsqldb</Value>
+        <Value>aamewiotws01sqldb</Value>
       </PropertyElementName>
       <PropertyElementName>
         <Name>TargetConnectionString</Name>
-        <Value>Data Source=aaadeletemewsqlserver.database.windows.net;Initial Catalog=aaadeletemewsqldb;Persist Security Info=False;User ID=meweiss@microsoft.com;Pooling=False;MultipleActiveResultSets=False;Connect Timeout=60;Encrypt=True;TrustServerCertificate=False;Authentication="Active Directory Interactive";Application Name="Microsoft SQL Server Data Tools, Schema Compare"</Value>
+        <Value>Data Source=aamewiotws01sqlserver.database.windows.net;Initial Catalog=aamewiotws01sqldb;Persist Security Info=False;User ID=meweiss@microsoft.com;Pooling=False;MultipleActiveResultSets=False;Connect Timeout=60;Encrypt=True;TrustServerCertificate=False;Authentication="Active Directory Interactive";Application Name="Microsoft SQL Server Data Tools, Schema Compare"</Value>
       </PropertyElementName>
       <PropertyElementName>
         <Name>TreatVerificationErrorsAsWarnings</Name>
