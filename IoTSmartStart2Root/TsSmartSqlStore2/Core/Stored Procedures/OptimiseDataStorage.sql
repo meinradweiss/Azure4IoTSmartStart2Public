@@ -3,8 +3,8 @@
 
 
 
-CREATE PROCEDURE [Core].[OptimiseDataStorage] @measureMonthLowWaterMark  DATETIME2 (0) = '1900.01.01'   -- Ts_Day >=
-											, @measureMonthHighWaterMark DATETIME2 (0) = '9999.12.31'   -- Ts_Day <=
+CREATE PROCEDURE [Core].[OptimiseDataStorage] @measureMonthLowWaterMark  DATETIME = '1900.01.01'   -- Ts_Day >=
+											, @measureMonthHighWaterMark DATETIME = '9999.12.31'   -- Ts_Day <=
                                             , @DropHistoryTable BIT = 1
 AS
 
@@ -35,7 +35,7 @@ BEGIN
 		 ,@HistoryTableName    SYSNAME
 		 ,@Partition_Number    INT
          ,@StepParameterValues NVARCHAR(max)
-		 ,@Ts_Day              DATETIME2 (0)
+		 ,@Ts_Day              DATETIME
 
   BEGIN TRY
 
@@ -44,7 +44,7 @@ BEGIN
     BEGIN
       EXEC [Helper].[Conditional_print] 'Old data in [Core].[MeasurementTransfer] pre processing necessary'
 
-      DECLARE @MinTs_DayOfTransfer DATETIME2 (0)
+      DECLARE @MinTs_DayOfTransfer DATETIME
 	         ,@CleanUpLastOptimiseRunStepId bigint
 
 
@@ -102,7 +102,7 @@ BEGIN
 
 	  /* Only empty partitions can be split in when a columnstore index exists on the table. To avoid this problem, data is only moved if
 	     there is a partition defined for the corresponding Ts_Day                                                                        */
-	  DECLARE @MaxPartitionBorder DATETIME2 (0)
+	  DECLARE @MaxPartitionBorder DATETIME
 
       SELECT @MaxPartitionBorder = MAX(CONVERT(DATE, FromValue))
       FROM [Partition].[PartitionRangeValues]

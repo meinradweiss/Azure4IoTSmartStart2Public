@@ -16,10 +16,10 @@ RETURN
         ,[SignalId]
         ,[MeasurementValue]
         ,[MeasurementText]
-        ,CONVERT(DATETIME2(0), CONVERT(DATE, Ts))                                                                 AS [Ts_Day_UTC]
+        ,CONVERT(DATETIME, CONVERT(DATE, Ts))                                                                 AS [Ts_Day_UTC]
 		-- CONVERT(VARCHAR(12) is required to be able to zoom in PowerBI below seconds
         ,CONVERT(VARCHAR(12), CONVERT(TIME(3), Ts, 121))                                                          AS [Ts_Time_UTC]
-		,CONVERT(DATETIME2(0), CONVERT(DATE,        CONVERT(DATETIMEOFFSET, [Ts]) AT TIME ZONE @DefaultTimeZone)) AS [Ts_Day]
+		,CONVERT(DATETIME, CONVERT(DATE,        CONVERT(DATETIMEOFFSET, [Ts]) AT TIME ZONE @DefaultTimeZone)) AS [Ts_Day]
 		-- CONVERT(VARCHAR(12) is required to be able to zoom in PowerBI below seconds
 		,CONVERT(VARCHAR(12), CONVERT(time(3), CONVERT(DATETIMEOFFSET, [Ts]) AT TIME ZONE @DefaultTimeZone)) AS [Ts_Time]
 
@@ -46,11 +46,11 @@ RETURN
      SELECT
          [NewTs]                                                                                                AS [Ts_UTC]
         ,CONVERT(DATETIME2(3),CONVERT(DATETIMEOFFSET, [NewTs]) AT TIME ZONE @DefaultTimeZone)                   AS [Ts]
-        ,CONVERT(DATETIME2(0), CONVERT(DATE, NewTs))                                                            AS [Ts_Day_PartitionKey_UTC]
+        ,CONVERT(DATETIME, CONVERT(DATE, NewTs))                                                            AS [Ts_Day_PartitionKey_UTC]
         ,[SignalId]
         ,[LastMeasurementValue]                                                                                 AS [MeasurementValue]
         ,[LastMeasurementText]                                                                                  AS [MeasurementText]
-        ,CONVERT(DATETIME2(0), CONVERT(DATE, [NewTs]))                                                          AS [Ts_Day_UTC]
+        ,CONVERT(DATETIME, CONVERT(DATE, [NewTs]))                                                          AS [Ts_Day_UTC]
 		-- CONVERT(VARCHAR(12) is required to be able to zoom in PowerBI below seconds
         ,CONVERT(VARCHAR(12),   CONVERT(TIME(3), [NewTs], 121))                                                 AS [Ts_Time_UTC]
 		,CONVERT(DATETIME2(0), CONVERT(DATE, CONVERT(DATETIMEOFFSET, [NewTs]) AT TIME ZONE @DefaultTimeZone))   AS [Ts_Day]

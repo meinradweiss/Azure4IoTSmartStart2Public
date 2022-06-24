@@ -1,8 +1,8 @@
 ﻿CREATE PROCEDURE [Partition].[RemoveDataPartitionsFromTable] 
                                @SchemaName              SYSNAME  
                               ,@TableName               SYSNAME  
-							  ,@TS_Day_LowWaterMark     DATETIME2 (0)     -- Including this day >=
-							  ,@TS_Day_HighWaterMark    DATETIME2 (0)     -- Including this day <=
+							  ,@TS_Day_LowWaterMark     DATETIME    -- Including this day >=
+							  ,@TS_Day_HighWaterMark    DATETIME     -- Including this day <=
 							  ,@PreserveSwitchOutTable  TINYINT = 0
 AS
 
@@ -20,8 +20,8 @@ BEGIN
 
   DECLARE @SQL                  NVARCHAR(MAX)
          ,@StepParameterValues  NVARCHAR(max)
-		 ,@Ts_Day               DATETIME2 (0)
-		 ,@UpperBoundary_Ts_Day DATETIME2 (0)
+		 ,@Ts_Day               DATETIME
+		 ,@UpperBoundary_Ts_Day DATETIME
 
 
 
@@ -64,7 +64,7 @@ BEGIN
     AND BoundaryValue  <= @TS_Day_HighWaterMark
   )
   SELECT Ts_Day
-       , IsNull((SELECT MIN(CONVERT(DATETIME2(0), value))                    -- In a month partition there can be more than on Ts_Day value
+       , IsNull((SELECT MIN(CONVERT(DATETIME, value))                    -- In a month partition there can be more than on Ts_Day value
 	             FROM sys.partition_range_values 
 				 WHERE function_id = BoundaryInfo.function_id 
 				   AND CONVERT(DATE, VALUE) > Ts_Day)
@@ -97,7 +97,7 @@ BEGIN
 
 
     -- Count the number of rows in partition
-    SET @SQL = CONCAT('SELECT @NumberOfRowsInPartition = COUNT(*) FROM ', QUOTENAME(@SchemaName), '.', QUOTENAME(@TableName), ' WHERE Ts_DAY >= CONVERT(DATETIME2(), ''', CONVERT(NVARCHAR(MAX), @Ts_Day), ''') AND Ts_Day < CONVERT(DATETIME2(), ''', CONVERT(NVARCHAR(MAX), @UpperBoundary_Ts_Day),''')')
+    SET @SQL = CONCAT('SELECT @NumberOfRowsInPartition = COUNT(*) FROM ', QUOTENAME(@SchemaName), '.', QUOTENAME(@TableName), ' WHERE Ts_DAY >= CONVERT(DATETIME, ''', CONVERT(NVARCHAR(MAX), @Ts_Day), ''') AND Ts_Day < CONVERT(DATETIME, ''', CONVERT(NVARCHAR(MAX), @UpperBoundary_Ts_Day),''')')
     EXECUTE sp_executesql @SQL, N'@NumberOfRowsInPartition INT OUTPUT', @NumberOfRowsInPartition=@NumberOfRowsInPartition OUTPUT
   
     IF @NumberOfRowsInPartition = 0

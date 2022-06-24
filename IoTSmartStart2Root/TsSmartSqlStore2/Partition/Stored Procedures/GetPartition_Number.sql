@@ -2,7 +2,7 @@
 CREATE PROCEDURE [Partition].[GetPartition_Number]
         @SchemaName         sysname
        ,@TableName          sysname
-	   ,@Ts_Day             DATETIME2 (0)
+	   ,@Ts_Day             DATETIME
 	   ,@Partition_Number   INT OUTPUT
 
 AS

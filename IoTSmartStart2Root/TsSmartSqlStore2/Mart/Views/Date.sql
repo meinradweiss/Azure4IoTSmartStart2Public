@@ -39,7 +39,7 @@ AS
 )
    
   SELECT   datum                                       AS DateId
-		  ,CONVERT(DATETIME2(0), CONVERT(DATE, datum)) AS [Ts_Day]
+		  ,CONVERT(DATETIME, CONVERT(DATE, datum)) AS [Ts_Day]
           ,DATEPART(YEAR,    datum)      AS Year
               , DATEPART(MONTH,   datum) AS Month
               , DATEPART(WEEKDAY, datum) AS Weekday

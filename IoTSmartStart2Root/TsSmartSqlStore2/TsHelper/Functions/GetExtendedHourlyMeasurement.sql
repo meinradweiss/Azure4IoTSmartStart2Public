@@ -17,8 +17,8 @@ BEGIN
 
   DECLARE @WINDOWDURATION INT = 3600000
 
-  DECLARE @FromTs_Day DATETIME2(0) = CONVERT(DATE, @FromTs)
-         ,@ToTs_Day   DATETIME2(0) = CONVERT(DATE, @ToTs)
+  DECLARE @FromTs_Day DATETIME = CONVERT(DATE, @FromTs)
+         ,@ToTs_Day   DATETIME = CONVERT(DATE, @ToTs)
 
   DECLARE @LastKnowTsAtOrLowerFromTs DateTime2(3)
    
@@ -36,8 +36,8 @@ BEGIN
   DECLARE @LastKnownMeasurementPerHour TABLE
   (
      SignalId         INT          NOT NULL
-	,Ts_Day           DATETIME2(0) NOT NULL
-	,hourToProcess    DATETIME2(0) NOT NULL
+	,Ts_Day           DATETIME     NOT NULL
+	,hourToProcess    DATETIME     NOT NULL
 	,Ts               DATETIME2(3) NOT NULL
 	,MeasurementValue REAL         NOT NULL
   )
@@ -48,7 +48,7 @@ BEGIN
     FROM   [TsHelper].[LastKnownMeasurementPerHour] MaxLastKnownMeasurementPerHour
     WHERE   MaxLastKnownMeasurementPerHour.SignalId =  @SignalId
   	  AND   Ts                                      >= @LastKnowTsAtOrLowerFromTs
-	  AND   Ts_Day                                  >= CONVERT(DATETIME2(0), CONVERT(DATE, @LastKnowTsAtOrLowerFromTs))
+	  AND   Ts_Day                                  >= CONVERT(DATETIME, CONVERT(DATE, @LastKnowTsAtOrLowerFromTs))
 	  AND   Ts                                      <= @ToTs
 	  AND   Ts_Day                                  <= @ToTs_Day
 

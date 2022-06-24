@@ -151,7 +151,7 @@ Creates "empty" partitions for dayPartion and monthPartition Schema/Function. If
 
 | Parameter | Data Type | Has<br>default<br>value | Default Value | Purpose |
 | :---      | :---:     | :---:                   | :---:         | :---     |
-| @startDate | DATETIME2 (0) | 1      | "today" | Specifies the start day to maintain the partition borders. The stored procedure takes this date and then calculates the first day of the corresponding month to define the real start date. |
+| @startDate | DATETIME | 1      | "today" | Specifies the start day to maintain the partition borders. The stored procedure takes this date and then calculates the first day of the corresponding month to define the real start date. |
 | @dayAheadNumber | INT | 1 |  35    | The number of days that are added to the current day. The system seeks then forward to the first day of the next month. <br/> e.g. @startDate = '2021-09-07', <br/>the current date is '2021-09-29' and  @dayAheadNumber int = 35 <br/>-> Partitions from 2021-09-01 to 2021-12-01 will be created, <br/> for the dayPartion Schema/Function and also for the monthPartition Schema/Function |
 
 If you would like to load historical data to the database, then you should specify the @startDate parameter. It should be set to the first date of the historical data.<br/>

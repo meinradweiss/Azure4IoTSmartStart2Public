@@ -13,7 +13,7 @@ BEGIN
 
   DECLARE  @StepParameterValues NVARCHAR(max)
           ,@ThisStepId          INT
-		  ,@Ts_Day              DATETIME2 (0)  
+		  ,@Ts_Day              DATETIME
           ,@StartTime           DATETIME2(3)
 
 

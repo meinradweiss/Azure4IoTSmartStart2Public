@@ -1,10 +1,11 @@
 ﻿CREATE TABLE [Core].[MeasurementStore] (
-    [Ts]               DATETIME2 (3)   NOT NULL,
-    [Ts_Day]           DATETIME2 (0)   NOT NULL,
-    [SignalId]         INT             NOT NULL,
-    [MeasurementValue] REAL            NULL,
-    [MeasurementText]  NVARCHAR (4000) NULL,
-    [CreatedAt]        DATETIME2 (3)   NULL
+    [Ts]                  DATETIME2 (3)   NOT NULL,
+    [Ts_Day]              DATETIME        NOT NULL,
+    [SignalId]            INT             NOT NULL,
+    [MeasurementValue]    REAL            NULL,
+    [MeasurementText]     NVARCHAR (4000) NULL,
+    [MeasurementContext]  NVARCHAR (4000) NULL,      -- Allow to store special context information. Best used as JSON Container
+    [CreatedAt]           DATETIME2 (3)   NULL
 ) ON [monthPartitionScheme] ([Ts_Day]);
 
 

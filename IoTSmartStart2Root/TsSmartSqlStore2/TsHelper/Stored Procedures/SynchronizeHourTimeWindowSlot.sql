@@ -1,8 +1,8 @@
 ﻿
 
 
-CREATE PROCEDURE [TsHelper].[SynchronizeHourTimeWindowSlot](@FromTs Datetime2(0)
-  														   ,@ToTs Datetime2(0))
+CREATE PROCEDURE [TsHelper].[SynchronizeHourTimeWindowSlot](@FromTs Datetime
+  														   ,@ToTs Datetime)
 AS
 BEGIN
 
