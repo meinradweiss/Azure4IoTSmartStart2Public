@@ -6,7 +6,7 @@ AS
    FROM
      (SELECT SignalId
 	       , Ts_Day
-		   , CONVERT(DATETIME ,LEFT(CONVERT(VARCHAR,Ts, 120),13) + ':00:00') as hourToProcess
+		   , CONVERT(DATETIME2(0) ,LEFT(CONVERT(VARCHAR,Ts, 120),13) + ':00:00') as hourToProcess
 		   , MAX(ts) AS TheTs
       FROM  [Core].[AllMeasurement] 
       GROUP BY SignalId, Ts_Day, CONVERT(DATETIME2(0) ,LEFT(CONVERT(VARCHAR,Ts, 120),13) + ':00:00')
