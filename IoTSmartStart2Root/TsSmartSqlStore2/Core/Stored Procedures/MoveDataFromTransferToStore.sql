@@ -51,7 +51,7 @@ BEGIN
 	  --EXEC  [Partition].[GetPartition_Number]                                     'Core', 'Measurement', @Ts_Day, @Partition_Number OUTPUT
 	  SELECT @Partition_Number   = $PARTITION.dayPartitionFunction(@Ts_Day)
       SELECT @CheckConstraintSQL = [Partition].[GetPartitionRangeCheckConstraint]('Core', 'Measurement', @Partition_Number)
-	  SET @HistoryTableName = CONCAT('History_', 'Measurement','_', @Ts_Day,'_',CONVERT(VARCHAR, GETUTCDATE(),126))
+	  SET @HistoryTableName = CONCAT('History_', 'Measurement','_', CONVERT(varchar, @Ts_Day, 126), '_', CONVERT(VARCHAR, GETUTCDATE(),126))
 
       -- Create Switch Table
       EXEC [Helper].[Conditional_print] 'Create Switch Table'

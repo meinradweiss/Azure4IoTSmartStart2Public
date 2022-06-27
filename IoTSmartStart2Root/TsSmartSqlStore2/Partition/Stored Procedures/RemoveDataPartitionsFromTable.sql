@@ -117,7 +117,7 @@ BEGIN
           
           
           -- Create the table for the switched out data
-          SET @ArchiveTableName = CONCAT('SwitchedOut_', @TableName,'_', @Ts_Day,'_',CONVERT(VARCHAR, GETUTCDATE(),126))
+          SET @ArchiveTableName = CONCAT('SwitchedOut_', @TableName,'_', CONVERT(varchar, @Ts_Day, 126) ,'_',CONVERT(VARCHAR, GETUTCDATE(),126))
 
           -- Create Switch Table
 	      EXEC  [Partition].[CloneTable] @SourceSchemaName        = @SchemaName

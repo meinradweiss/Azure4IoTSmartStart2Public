@@ -79,7 +79,7 @@ The following button deploys the core infrastructure into your chosen subscripti
 
 For the custom deployment, the following parameters need to be defined:
 - **Region**: Select your designated Azure Region, make sure to pick a region which supports the necessary components (e.g. West Europe)
-- **Unique Solution Prefix**: Pick a unique string for your solution. The name must be between 3 and 24 characters in length and use numbers and lower-case letters only.<br/> The prefix will be appended at the front of your Azure services. <br/>It is helpful, if it relates somehow to your project and it is the part of the object names that makes them unique.
+- **Unique Solution Prefix**: Pick a unique string for your solution. The name must be between 3 and 17 characters in length and use numbers and lower-case letters only.<br/> The prefix will be appended at the front of your Azure services. <br/>It is helpful, if it relates somehow to your project and it is the part of the object names that makes them unique.
   - Example: <br/> 
     Unique Solution Prefix: **ch4iot4wsxxx** -> Azure IotHub: **ch4iot4wsxxx**hub, Azure SQL Server: **ch4iot4wsxxx**sqlserver, ...
 - **Sql Administrator Login**: pick a username for your SQL administrator (don't use a "well known name" like, sa, admin, manager, ...)

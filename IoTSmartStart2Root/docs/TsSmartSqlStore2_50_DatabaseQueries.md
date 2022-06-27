@@ -29,8 +29,9 @@ A query which specifies the concrete time window and the corresponding filter on
     SELECT *
     FROM  [Core].[AllMeasurement]
     WHERE [SignalId] = @SignalId
-        AND [Ts_Day] >= CONVERT(DATE, @FromTs) 
-        AND [Ts_Day] <= CONVERT(DATE, @ToTs)  AND [Ts]     >= @FromTs
+        AND [Ts_Day] >= CONVERT(DATETIME, CONVERT(DATE, @FromTs))  
+        AND [Ts_Day] <= CONVERT(DATETIME, CONVERT(DATE, @ToTs))   
+        AND [Ts]     >= @FromTs
         AND [Ts]     <= @ToTs
 
 <br/>
@@ -50,8 +51,8 @@ The function [Mart].[GetMeasurementForSignal] help you to run such queries witho
       SELECT *
       FROM  [Core].[AllMeasurement]
       WHERE [SignalId] = @SignalId
-        AND [Ts_Day] >= CONVERT(DATE, @FromTs) 
-        AND [Ts_Day] <= CONVERT(DATE, @ToTs) 
+        AND [Ts_Day] >= CONVERT(DATETIME, CONVERT(DATE, @FromTs)) 
+        AND [Ts_Day] <= CONVERT(DATETIME, CONVERT(DATE, @ToTs)) 
         AND [Ts]     >= @FromTs
         AND [Ts]     <= @ToTs
 
@@ -74,6 +75,7 @@ A more sophisticated function is [Mart].[GetMeasurementForRelativeTimeWindow]. I
 
 * specify the size of the window your are looking for (e.g. 1 Hour, 2 Days, ...)
   * Supported window sizes
+    * 'SECOND'
     * 'MINUTE'
     * 'HOUR'
     * 'DAY'
@@ -93,7 +95,7 @@ This function can also be used in conjunction with Power BI and dynamic M parame
     CREATE FUNCTION [Mart].[GetMeasurementForRelativeTimeWindow] 
       (  @DeltaTime       VARCHAR(25)
         ,@EndDateTime     DATETIME2(3) 
-      ,@DefaultTimeZone VARCHAR(50) = 'Central European Standard Time' 
+        ,@DefaultTimeZone VARCHAR(50) = 'Central European Standard Time' 
       )
     RETURNS TABLE
     AS 
@@ -102,18 +104,18 @@ This function can also be used in conjunction with Power BI and dynamic M parame
     With [GetMeasurement]
     as
     (
-      SELECT [Ts]                                                                                                AS [Ts_UTC]
-            ,CONVERT(DATETIME2(3),CONVERT(DATETIMEOFFSET, [Ts]) AT TIME ZONE @DefaultTimeZone)                   AS [Ts]
-            ,[Ts_Day]                                                                                            AS [Ts_Day_PartitionKey_UTC]
+      SELECT [Ts]                                                                                                 AS [Ts_UTC]
+            ,CONVERT(DATETIME2(3),CONVERT(DATETIMEOFFSET, [Ts]) AT TIME ZONE @DefaultTimeZone)                    AS [Ts]
+            ,[Ts_Day]                                                                                             AS [Ts_Day_PartitionKey_UTC]
             ,[SignalId]
             ,[MeasurementValue]
             ,[MeasurementText]
-            ,CONVERT(DATE, Ts)                                                                                   AS [Ts_Day_UTC]
+            ,CONVERT(DATETIME, CONVERT(DATE, Ts))                                                                 AS [Ts_Day_UTC]
         -- CONVERT(VARCHAR(12) is required to be able to zoom in PowerBI below seconds
-            ,CONVERT(VARCHAR(12), CONVERT(TIME(3), Ts, 121))                                                     AS [Ts_Time_UTC]
-        ,CONVERT(DATE,        CONVERT(DATETIMEOFFSET, [Ts]) AT TIME ZONE @DefaultTimeZone)                   AS [Ts_Day]
+            ,CONVERT(VARCHAR(12),  CONVERT(TIME(3), Ts, 121))                                                     AS [Ts_Time_UTC]
+        ,CONVERT(DATETIME, CONVERT(DATE, CONVERT(DATETIMEOFFSET, [Ts]) AT TIME ZONE @DefaultTimeZone))        AS [Ts_Day]
         -- CONVERT(VARCHAR(12) is required to be able to zoom in PowerBI below seconds
-        ,CONVERT(VARCHAR(12), CONVERT(time(3), CONVERT(DATETIMEOFFSET, [Ts]) AT TIME ZONE @DefaultTimeZone)) AS [Ts_Time]
+        ,CONVERT(VARCHAR(12), CONVERT(time(3), CONVERT(DATETIMEOFFSET, [Ts]) AT TIME ZONE @DefaultTimeZone))  AS [Ts_Time]
 
       FROM  [Core].[AllMeasurement]
         CROSS JOIN [Mart].[GetRelativeTimeWindow] (@DeltaTime, @EndDateTime, @DefaultTimeZone)
@@ -151,6 +153,18 @@ Eastern Europe Standard Time
 ![Power BI Report Eastern Europe Time](media/80_01_PowerBiDynamicM02.png)
 
 
+The M code looks like this
+
+    let
+        Source = Sql.Databases("<mydbserver>.database.windows.net"),
+        mewiot99sqldb = Source{[Name="mewiot99sqldb"]}[Data],
+        Mart_GetMeasurementForRelativeTimeWindow = mewiot99sqldb{[Schema="Mart",Item="GetMeasurementForRelativeTimeWindow"]}[Data],
+        #"Invoked FunctionMart_GetMeasurementForRelativeTimeWindow" = Mart_GetMeasurementForRelativeTimeWindow(DeltaTime,EndDateTime,SqlTimeZone),
+        #"Filtered Rows" = Table.SelectRows(#"Invoked FunctionMart_GetMeasurementForRelativeTimeWindow", each true)
+    in
+        #"Filtered Rows"
+
+<br/>
 
 ## Power BI hybrid tables ##
 
