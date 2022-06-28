@@ -1,4 +1,6 @@
-﻿CREATE PROCEDURE [Core].[RebuildFragmentedIndexes] (@FragmentationLimit float = 80.0)
+﻿
+
+CREATE PROCEDURE [Core].[RebuildFragmentedIndexes] (@FragmentationLimit float = 80.0)
 AS
 BEGIN
 
@@ -64,5 +66,6 @@ WHILE @@fetch_status = 0
 
  EXEC [Logging].[EndTask]  @TaskId, 'End', NULL
 
+ SELECT 0 AS ReturnDataSet
 
 END

@@ -19,7 +19,7 @@ RETURN
   ,StartDate
   AS
   ( 
-      SELECT CASE WHEN CHARINDEX('SECOND', @DeltaTime) = 1 THEN DATEADD(MINUTE, CONVERT(INT,  REPLACE(@DeltaTime,'SECOND','')), UtcEndDateTime)
+      SELECT CASE WHEN CHARINDEX('SECOND', @DeltaTime) = 1 THEN DATEADD(SECOND, CONVERT(INT,  REPLACE(@DeltaTime,'SECOND','')), UtcEndDateTime)
 	              WHEN CHARINDEX('MINUTE', @DeltaTime) = 1 THEN DATEADD(MINUTE, CONVERT(INT,  REPLACE(@DeltaTime,'MINUTE','')), UtcEndDateTime)
 	              WHEN CHARINDEX('HOUR',   @DeltaTime) = 1 THEN DATEADD(HOUR,   CONVERT(INT,  REPLACE(@DeltaTime,'HOUR','')),   UtcEndDateTime)
 	              WHEN CHARINDEX('DAY',    @DeltaTime) = 1 THEN DATEADD(DAY,    CONVERT(INT,  REPLACE(@DeltaTime,'DAY','')),    UtcEndDateTime)

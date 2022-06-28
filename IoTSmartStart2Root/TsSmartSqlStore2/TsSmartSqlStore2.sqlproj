@@ -100,6 +100,9 @@
     <Folder Include="Config\Functions\" />
     <Folder Include="Helper\" />
     <Folder Include="Helper\Stored Procedures\" />
+    <Folder Include="Stage" />
+    <Folder Include="Stage\Tables" />
+    <Folder Include="Stage\Stored Procedures" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HelperScripts\CreateSignals.sql" />
@@ -149,7 +152,7 @@
     <Build Include="Storage\dayPartitionFunction.sql" />
     <Build Include="Storage\monthPartitionScheme.sql" />
     <Build Include="Storage\dayPartitionScheme.sql" />
-    <Build Include="Security\stage.sql" />
+    <Build Include="Security\Stage.sql" />
     <Build Include="Security\Security.sql" />
     <Build Include="Security\Partition.sql" />
     <Build Include="Security\Mart.sql" />
@@ -203,6 +206,10 @@
     <Build Include="Partition\Stored Procedures\CheckNonTrustedConstraints.sql" />
     <Build Include="Config\Tables\SignalDefaultConfig.sql" />
     <Build Include="Mart\Functions\GetPivotHumidityTemperature.sql" />
+    <Build Include="Stage\Tables\SignalDefaultConfig.sql" />
+    <Build Include="Stage\Tables\Signal.sql" />
+    <Build Include="Stage\Tables\Measurement.sql" />
+    <Build Include="Stage\Stored Procedures\LoadTransferData.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include="$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\AzureV12\SqlSchemas\master.dacpac">
