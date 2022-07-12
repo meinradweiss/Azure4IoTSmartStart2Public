@@ -2,7 +2,7 @@
 CREATE PROCEDURE [Partition].[GetPartition_Number]
         @SchemaName         sysname
        ,@TableName          sysname
-	   ,@Ts_Day             DATETIME
+	   ,@Ts_Day             INT
 	   ,@Partition_Number   INT OUTPUT
 
 AS
@@ -20,10 +20,10 @@ BEGIN
   SELECT  @PartitionFunctionName = PartitionFunctionName
   FROM   [Partition].[TablePartitionFunction]
   WHERE  SchemaName = @SchemaName
-    AND TableName  = @TableName
+    AND  TableName  = @TableName
 
   DECLARE @SQL NVARCHAR(MAX)
-  SET @SQL = 'SELECT @Partition_Number = $PARTITION.' + @PartitionFunctionName + '(''' + CONVERT(NVARCHAR, @Ts_Day,102) + ''')'
+  SET @SQL = 'SELECT @Partition_Number = $PARTITION.' + @PartitionFunctionName + '(' + CONVERT(NVARCHAR, @Ts_Day) + ')'
   EXECUTE sp_executesql @SQL, N'@Partition_Number INT OUTPUT', @Partition_Number=@Partition_Number OUTPUT
 
 END

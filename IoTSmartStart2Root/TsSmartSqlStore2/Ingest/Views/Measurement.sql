@@ -32,7 +32,7 @@ AS
   )
   SELECT 
         i.[Ts]               
-       ,CONVERT(DATE, i.[Ts])           AS Ts_Day      -- Calculate partition Key, Date type will be converted to DateTime. The hour is removed by design, to allow getting a day list in for example Power BI
+       ,CONVERT(INT, CONVERT(VARCHAR, i.[Ts], 112)) as [Ts_Day]      -- Calculate partition Key, allow getting a day list in for example Power BI
        ,CONVERT(INT,    i.[SignalId])
        ,i.[MeasurementValue] 
        ,i.[MeasurementText]
@@ -42,7 +42,7 @@ AS
     INNER JOIN [Core].[AllMeasurement] AS m
        ON  i.[SignalId]   = m.[SignalId] 
          AND i.[Ts]       = m.[Ts] 
-         AND m.[Ts_Day]   = CONVERT(DATETIME, CONVERT(DATE, i.[Ts]));  -- Enable partition elimination
+         AND m.[Ts_Day]   = CONVERT(INT, CONVERT(VARCHAR, i.[Ts], 112));  -- Enable partition elimination
 
   -- Insert duplicate records if the happen in one batch of data
   INSERT INTO [Core].[MeasurementDuplicateKey] 
@@ -56,8 +56,8 @@ AS
        ,[CreatedAt]
   )
   SELECT [INSERTED].[Ts]
-        ,CONVERT(DATE, [INSERTED].[Ts])           AS [Ts_Day]      -- Calculate partition Key, Date type will be converted to DateTime
-        ,CONVERT(INT,  [INSERTED].[SignalId])     AS [SignalId]
+        ,CONVERT(INT, CONVERT(VARCHAR, [INSERTED].[Ts], 112)) AS [Ts_Day]      -- Calculate partition Key, Date type will be converted to DateTime
+        ,CONVERT(INT, [INSERTED].[SignalId])                  AS [SignalId]
         ,[MeasurementValue]
         ,[MeasurementText]
         ,[MeasurementContext]
@@ -88,8 +88,8 @@ AS
   )
   SELECT 
        i.[Ts] 
-      ,CONVERT(DATE, i.[Ts]) as Ts_Day  -- Calculate partition Key, Date type will be converted to DateTime
-      ,CONVERT(INT,           i.[SignalId])
+      ,CONVERT(INT, CONVERT(VARCHAR, i.[Ts], 112)) AS [Ts_Day]  -- Calculate partition Key
+      ,CONVERT(INT, i.[SignalId])                  AS [SignalId]
       ,MIN(i.[MeasurementValue])        -- Pick the smaller if more than one arrived
       ,MIN(i.[MeasurementText])
       ,MIN(i.[MeasurementContext])
@@ -100,7 +100,7 @@ AS
   LEFT OUTER JOIN [Core].[AllMeasurement] as m
       ON  i.[SignalId] = m.[SignalId] 
          AND i.[Ts]       = m.[Ts] 
-         AND m.[Ts_Day]   = CONVERT(DATETIME, CONVERT(DATE, i.[Ts]))
+         AND m.[Ts_Day]   = CONVERT(INT, CONVERT(VARCHAR, i.[Ts], 112))
   INNER JOIN [Core].[Signal] as s
      ON i.[SignalId] = s.[SignalId] 
   WHERE m.[SignalId]   IS NULL                           -- Really new events

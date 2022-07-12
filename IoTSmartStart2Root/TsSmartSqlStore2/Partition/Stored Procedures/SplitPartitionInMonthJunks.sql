@@ -20,7 +20,7 @@ EXEC [Logging].[StartTask]  'SplitPartitionInMonthJunks', @TaskParameterValues, 
 
 
 DECLARE @AddSplits CURSOR;
-DECLARE @SplitKey  DATE;
+DECLARE @SplitKey  INT;
 
 DECLARE @SQLString nVARCHAR(max)
 
@@ -54,7 +54,7 @@ AS
 ), ExpectedSplitKeys
 AS
 (
-select * , convert(DATE, thedate) as YearMonthDayBasedKey
+select * , convert(int, convert(varchar, thedate,112)) as YearMonthDayBasedKey
 from DateList
 where DATEPART(day, theDate) = 1 -- Only the first day of a month
 )

@@ -34,8 +34,8 @@ AS
      ON ps.function_id = prv_right.function_id
      AND prv_right.boundary_id = p.partition_number
   WHERE prv_right.value IS NOT NULL
-    AND prv_right.value  > convert(date, dateadd(day,-90, getdate()))
-    AND prv_right.value <= convert(date,                   getdate())
+    AND prv_right.value  > convert(int, convert(varchar, dateadd(day,-90, getdate()), 112))
+    AND prv_right.value <= convert(int, convert(varchar,                   getdate(),  112))
 )
 , FragementationInfo
 AS

@@ -131,7 +131,7 @@ BEGIN
      set @TSQLScripCreationIndex =''
      set @TSQLScripDisableIndex =''
      set @TSQLScripCreationIndex='CREATE '+@IndexTypeDesc + ' INDEX ' + QUOTENAME(@IndexName)+' ON ' + QUOTENAME(@TargetSchemaName) +'.'+ QUOTENAME(@TargetTableName)+ 
-      + CHAR(13)+' ON ' + @FileGroupName + ';'  
+       CHAR(13) + ' ON ' + @FileGroupName + ';'  
    END
    ELSE
    BEGIN

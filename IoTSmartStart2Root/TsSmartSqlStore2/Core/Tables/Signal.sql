@@ -60,7 +60,7 @@ CREATE TRIGGER [Core].[CoreSignal_IU]
         			              GROUP BY [SignalId]) AS [LastMeasurement]
         			  ON [Measurement].[SignalId]  = [LastMeasurement].[SignalId]
         			  AND [Measurement].[Ts]       = [LastMeasurement].[LastTimestamp]
-        			  AND [Measurement].[Ts_Day]   = CONVERT(DATETIME, CONVERT(DATE, LastMeasurement.[LastTimestamp]))
+        			  AND [Measurement].[Ts_Day]   = CONVERT(INT, CONVERT(VARCHAR, LastMeasurement.[LastTimestamp], 112))
                    ) AS [LatestArrivedMeasurement]
         ON [LatestMeasurement].[SignalId] = [LatestArrivedMeasurement].[SignalId]
 

@@ -1,8 +1,8 @@
 ﻿
 
-CREATE PROCEDURE [Stage].[LoadTransferData]   @From_Ts_Day                 DATETIME = '1900.01.01'   -- Ts_Day >=
-                                            , @To_Ts_Day                   DATETIME = '9999.12.31'   -- Ts_Day <=
-											, @HighWaterMarkMeasuremtStore DATETIME = '1900.01.01'   -- Ts_Day <=
+CREATE PROCEDURE [Stage].[LoadTransferData]   @From_Ts_Day                 INT = 19000101   -- Ts_Day >=
+                                            , @To_Ts_Day                   INT = 99991231   -- Ts_Day <=
+											, @HighWaterMarkMeasuremtStore INT = 19000101   -- Ts_Day <=
 
 AS
 
@@ -28,7 +28,7 @@ BEGIN
   EXEC [Logging].[StartTask]  'LoadTransferData', @TaskParameterValues, @TaskId =   @TaskId output
 
   DECLARE @StepParameterValues NVARCHAR(max)
-		 ,@Ts_Day              DATETIME
+		 ,@Ts_Day              INT
 
   BEGIN TRY
 
@@ -225,7 +225,7 @@ BEGIN
   /*********************************************************************/
   BEGIN CATCH
 
-	DECLARE @PrintText VARCHAR(255)
+	DECLARE @PrintText VARCHAR(2048)
     SET @PrintText = CONCAT('Exception catched; Procedure = ', OBJECT_NAME(@@PROCID), '; @StartTrancount=', @StartTrancount, '; @@TRANCOUNT = ', @@TRANCOUNT)
     PRINT @PrintText
 

@@ -1,8 +1,8 @@
 ﻿CREATE PROCEDURE [Partition].[RemoveDataPartitionsFromTable] 
                                @SchemaName              SYSNAME  
                               ,@TableName               SYSNAME  
-							  ,@TS_Day_LowWaterMark     DATETIME    -- Including this day >=
-							  ,@TS_Day_HighWaterMark    DATETIME     -- Including this day <=
+							  ,@TS_Day_LowWaterMark     INT    -- Including this day >=
+							  ,@TS_Day_HighWaterMark    INT     -- Including this day <=
 							  ,@PreserveSwitchOutTable  TINYINT = 0
 AS
 
@@ -20,8 +20,8 @@ BEGIN
 
   DECLARE @SQL                  NVARCHAR(MAX)
          ,@StepParameterValues  NVARCHAR(max)
-		 ,@Ts_Day               DATETIME
-		 ,@UpperBoundary_Ts_Day DATETIME
+		 ,@Ts_Day               INT
+		 ,@UpperBoundary_Ts_Day INT
 
 
 
@@ -40,7 +40,7 @@ BEGIN
       f.name,
 	  f.function_id,
       r.boundary_id, 
-      CONVERT(DATE, r.value) AS [BoundaryValue]   
+      CONVERT(INT, r.value) AS [BoundaryValue]   
   FROM sys.tables AS t  
   JOIN sys.indexes AS i  
       ON t.object_id = i.object_id  
@@ -64,10 +64,10 @@ BEGIN
     AND BoundaryValue  <= @TS_Day_HighWaterMark
   )
   SELECT Ts_Day
-       , IsNull((SELECT MIN(CONVERT(DATETIME, value))                    -- In a month partition there can be more than on Ts_Day value
+       , IsNull((SELECT MIN(CONVERT(INT, value))                    -- In a month partition there can be more than on Ts_Day value
 	             FROM sys.partition_range_values 
 				 WHERE function_id = BoundaryInfo.function_id 
-				   AND CONVERT(DATE, VALUE) > Ts_Day)
+				   AND CONVERT(INT, VALUE) > Ts_Day)
 	            , @TS_Day_HighWaterMark) as UpperBoundary_Ts_Day
   FROM BoundaryInfo
   ORDER BY Ts_Day ASC
@@ -97,7 +97,8 @@ BEGIN
 
 
     -- Count the number of rows in partition
-    SET @SQL = CONCAT('SELECT @NumberOfRowsInPartition = COUNT(*) FROM ', QUOTENAME(@SchemaName), '.', QUOTENAME(@TableName), ' WHERE Ts_DAY >= CONVERT(DATETIME, ''', CONVERT(NVARCHAR(MAX), @Ts_Day), ''') AND Ts_Day < CONVERT(DATETIME, ''', CONVERT(NVARCHAR(MAX), @UpperBoundary_Ts_Day),''')')
+    SET @SQL = CONCAT('SELECT @NumberOfRowsInPartition = COUNT(*) FROM ', QUOTENAME(@SchemaName), '.', QUOTENAME(@TableName), ' WHERE Ts_DAY >= ', CONVERT(NVARCHAR(MAX), @Ts_Day), ' AND Ts_Day < ', CONVERT(NVARCHAR(MAX), @UpperBoundary_Ts_Day))
+    
     EXECUTE sp_executesql @SQL, N'@NumberOfRowsInPartition INT OUTPUT', @NumberOfRowsInPartition=@NumberOfRowsInPartition OUTPUT
   
     IF @NumberOfRowsInPartition = 0
@@ -117,7 +118,7 @@ BEGIN
           
           
           -- Create the table for the switched out data
-          SET @ArchiveTableName = CONCAT('SwitchedOut_', @TableName,'_', CONVERT(varchar, @Ts_Day, 126) ,'_',CONVERT(VARCHAR, GETUTCDATE(),126))
+          SET @ArchiveTableName = CONCAT('SwitchedOut_', @TableName, '_', @Ts_Day, '_', CONVERT(VARCHAR, GETUTCDATE(),126))
 
           -- Create Switch Table
 	      EXEC  [Partition].[CloneTable] @SourceSchemaName        = @SchemaName

@@ -32,8 +32,8 @@ RETURN
   )
   SELECT [UtcStartDateTime]
         ,[UtcEndDateTime]
-		,CONVERT(DATETIME, CONVERT(DATE, [UtcStartDateTime]))                                         AS [UtcTs_DayStartDate]
-		,CONVERT(DATETIME, CONVERT(DATE, [UtcEndDateTime]))                                           AS [UtcTs_DayEndDate]
+   	    ,CONVERT(INT, CONVERT(VARCHAR(30), [UtcStartDateTime], 112))                                      AS [UtcTs_DayStartDate]
+		,CONVERT(INT, CONVERT(VARCHAR(30), [UtcEndDateTime], 112))                                        AS [UtcTs_DayEndDate]
 		,@DefaultTimeZone                                                                                 AS [TimeZone]
 		,CONVERT(DATETIME2(3), CONVERT(DATETIMEOFFSET, [UtcStartDateTime]) AT TIME ZONE @DefaultTimeZone) AS [StartDateTime]
 		,CONVERT(DATETIME2(3), CONVERT(DATETIMEOFFSET, [UtcEndDateTime])   AT TIME ZONE @DefaultTimeZone) AS [EndDateTime]

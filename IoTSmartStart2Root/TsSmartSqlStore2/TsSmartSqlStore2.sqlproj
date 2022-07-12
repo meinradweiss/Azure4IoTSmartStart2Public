@@ -142,7 +142,6 @@
     <Build Include="dbo\Stored Procedures\SplitPartitionInMonthJunks.sql" />
     <Build Include="dbo\Stored Procedures\SplitPartitionInDayJunks.sql" />
     <Build Include="dbo\Stored Procedures\RebuildFragmentedIndexes.sql" />
-    <Build Include="Partition\Stored Procedures\CreateSwitchTable.sql" />
     <Build Include="Logging\Stored Procedures\StartTask.sql" />
     <Build Include="Logging\Stored Procedures\StartStep.sql" />
     <Build Include="Logging\Stored Procedures\EndTask.sql" />
@@ -210,6 +209,9 @@
     <Build Include="Stage\Tables\Signal.sql" />
     <Build Include="Stage\Tables\Measurement.sql" />
     <Build Include="Stage\Stored Procedures\LoadTransferData.sql" />
+    <Build Include="Core\Tables\TsDay.sql" />
+    <Build Include="Mart\Views\TsDay.sql" />
+    <Build Include="Mart\Views\AllMeasurement.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include="$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\AzureV12\SqlSchemas\master.dacpac">

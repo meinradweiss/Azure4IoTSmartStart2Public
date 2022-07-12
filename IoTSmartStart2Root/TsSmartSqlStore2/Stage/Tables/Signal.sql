@@ -1,4 +1,4 @@
-﻿CREATE TABLE [stage].[Signal] (
+﻿CREATE TABLE [Stage].[Signal] (
     [SignalGId]               UNIQUEIDENTIFIER NOT NULL,
     [SignalId]                INT              NOT NULL,
     [SignalName]              NVARCHAR (256)   NOT NULL,

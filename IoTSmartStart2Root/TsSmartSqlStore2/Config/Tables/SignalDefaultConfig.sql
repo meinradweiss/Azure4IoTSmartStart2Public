@@ -2,7 +2,7 @@
 (
     [SignalDefaultConfigGId]  UNIQUEIDENTIFIER DEFAULT NEWSEQUENTIALID ()           NOT NULL,
     [SignalDefaultConfigId]   INT              DEFAULT (NEXT VALUE FOR [Core].[Id]) NOT NULL,
-    [Measurand]               NVARCHAR (256)                                        NULL,
+    [Measurand]               NVARCHAR (256)                                        NOT NULL,
     [UpdateLatestMeasurement] BIT                                                   NOT NULL,
     [SetCreatedAt]            BIT                                                   NOT NULL,
     [CreatedAt]               DATETIME2 (3)    DEFAULT GETUTCDATE() NOT NULL,

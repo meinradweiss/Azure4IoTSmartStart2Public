@@ -1,10 +1,10 @@
 ﻿CREATE TABLE [Core].[MeasurementDuplicateKey] (
     [Ts]                  DATETIME2 (3)   NOT NULL,
-    [Ts_Day]              DATETIME        NOT NULL,
+    [Ts_Day]              INT             NOT NULL,
     [SignalId]            INT             NOT NULL,
     [MeasurementValue]    REAL            NULL,
-    [MeasurementText]     NVARCHAR (4000) NULL,
-    [MeasurementContext]  NVARCHAR (4000) NULL,      -- Allow to store special context information. Best used as JSON Container
+    [MeasurementText]     NVARCHAR (2000) NULL,
+    [MeasurementContext]  NVARCHAR (2000) NULL,      -- Allow to store special context information. Best used as JSON Container
     [CreatedAt]           DATETIME2 (3)   DEFAULT (getdate()) NULL,
     CONSTRAINT [FK_Core_MeasurementDuplicateKey_Signal] FOREIGN KEY ([SignalId]) REFERENCES [Core].[Signal] ([SignalId])
 

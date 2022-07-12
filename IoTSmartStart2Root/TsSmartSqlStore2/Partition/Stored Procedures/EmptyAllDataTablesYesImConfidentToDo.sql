@@ -43,12 +43,12 @@ BEGIN
 
 
     -- Delete data from partitioned tables
-    EXEC [Partition].[RemoveDataPartitionsFromTable] 'Core', 'Measurement',             '1900.01.01', '9999.12.31', 0
-    EXEC [Partition].[RemoveDataPartitionsFromTable] 'Core', 'MeasurementTransfer',     '1900.01.01', '9999.12.31', 0
-    EXEC [Partition].[RemoveDataPartitionsFromTable] 'Core', 'MeasurementStore',        '1900.01.01', '9999.12.31', 0
-    EXEC [Partition].[RemoveDataPartitionsFromTable] 'Core', 'MeasurementDuplicateKey', '1900.01.01', '9999.12.31', 0
+    EXEC [Partition].[RemoveDataPartitionsFromTable] 'Core', 'Measurement',             19000101, 99991231, 0
+    EXEC [Partition].[RemoveDataPartitionsFromTable] 'Core', 'MeasurementTransfer',     19000101, 99991231, 0
+    EXEC [Partition].[RemoveDataPartitionsFromTable] 'Core', 'MeasurementStore',        19000101, 99991231, 0
+    EXEC [Partition].[RemoveDataPartitionsFromTable] 'Core', 'MeasurementDuplicateKey', 19000101, 99991231, 0
 
-    EXEC [Partition].[RemoveDataPartitionsFromTable] 'Stage', 'Measurement',            '1900.01.01', '9999.12.31', 0
+    EXEC [Partition].[RemoveDataPartitionsFromTable] 'Stage', 'Measurement',            19000101, 99991231, 0
 
 
     DELETE FROM [Core].[MeasurementWrongMessageFormatOrDataType]

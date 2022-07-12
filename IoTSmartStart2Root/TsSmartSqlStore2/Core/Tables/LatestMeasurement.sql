@@ -2,8 +2,8 @@
     [SignalId]           INT           NOT NULL,
     [Ts]                 DATETIME2 (3) NOT NULL,
     [MeasurementValue]   REAL          NULL, 
-    [MeasurementText]    NVARCHAR (4000) NULL,
-    [MeasurementContext] NVARCHAR (4000) NULL,
+    [MeasurementText]    NVARCHAR (2000) NULL,
+    [MeasurementContext] NVARCHAR (2000) NULL,
     [CreatedAt]          DATETIME2 (3) NULL,
     CONSTRAINT [PK_CoreLatestMeasurement] PRIMARY KEY NONCLUSTERED ([SignalId])
 ) 
