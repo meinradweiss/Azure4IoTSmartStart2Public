@@ -212,6 +212,7 @@
     <Build Include="Core\Tables\TsDay.sql" />
     <Build Include="Mart\Views\TsDay.sql" />
     <Build Include="Mart\Views\AllMeasurement.sql" />
+    <Build Include="Core\Views\VersionInfo.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include="$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\AzureV12\SqlSchemas\master.dacpac">
