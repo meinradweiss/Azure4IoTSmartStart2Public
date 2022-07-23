@@ -103,6 +103,8 @@
     <Folder Include="Stage" />
     <Folder Include="Stage\Tables" />
     <Folder Include="Stage\Stored Procedures" />
+    <Folder Include="MartPowerBI\" />
+    <Folder Include="MartPowerBI\Views\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HelperScripts\CreateSignals.sql" />
@@ -213,6 +215,11 @@
     <Build Include="Mart\Views\TsDay.sql" />
     <Build Include="Mart\Views\AllMeasurement.sql" />
     <Build Include="Core\Views\VersionInfo.sql" />
+    <Build Include="MartPowerBI\Views\Signal.sql" />
+    <Build Include="MartPowerBI\Views\LatestMeasurement.sql" />
+    <Build Include="MartPowerBI\Views\TsDay.sql" />
+    <Build Include="MartPowerBI\Views\Measurement.sql" />
+    <Build Include="Security\MartPowerBI.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include="$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\AzureV12\SqlSchemas\master.dacpac">

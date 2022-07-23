@@ -1,4 +1,5 @@
-﻿CREATE VIEW [Mart].[TsDay]
+﻿
+CREATE VIEW [MartPowerBI].[TsDay]
 AS
 
 SELECT *
@@ -12,4 +13,4 @@ SELECT *
 	                                                                     ELSE 'N'
        END AS LastThirtyDays
 FROM [Core].[TsDay]
-WHERE Ts_Date <= GETDATE()
+WHERE Ts_Date <= DATEADD(DAY, 1, GETDATE()) -- Filtering in hybrid tables is < RangeEnd

@@ -1,4 +1,6 @@
-﻿CREATE FUNCTION [Mart].[GetMeasurementForRelativeTimeWindow] 
+﻿
+
+CREATE FUNCTION [Mart].[GetMeasurementForRelativeTimeWindow] 
   (  @DeltaTime       VARCHAR(25)
     ,@EndDateTime     DATETIME2(3) 
 	,@DefaultTimeZone VARCHAR(50) = 'Central European Standard Time' 
@@ -6,6 +8,7 @@
 RETURNS TABLE
 AS 
 RETURN 
+
 
 With [GetMeasurement]
 as
@@ -19,8 +22,8 @@ as
 		,CONVERT(INT, CONVERT(VARCHAR, [Ts], 112))                                                              AS [Ts_Day_UTC]
 		-- CONVERT(VARCHAR(12) is required to be able to zoom in PowerBI below seconds
         ,CONVERT(VARCHAR(12),  CONVERT(TIME(3), Ts, 121))                                                       AS [Ts_Time_UTC]
-		,CONVERT(INT,      CONVERT(VARCHAR, CONVERT(DATETIMEOFFSET, [Ts]) AT TIME ZONE @DefaultTimeZone), 112)  AS [Ts_Day]
-		-- CONVERT(VARCHAR(12) is required to be able to zoom in PowerBI below seconds
+		,CONVERT(INT,      CONVERT(VARCHAR, CONVERT(DATETIMEOFFSET, [Ts]) AT TIME ZONE @DefaultTimeZone, 112))  AS [Ts_Day]
+		---- CONVERT(VARCHAR(12) is required to be able to zoom in PowerBI below seconds
 		,CONVERT(VARCHAR(12), CONVERT(time(3), CONVERT(DATETIMEOFFSET, [Ts]) AT TIME ZONE @DefaultTimeZone))    AS [Ts_Time]
 
   FROM  [Core].[AllMeasurement]
