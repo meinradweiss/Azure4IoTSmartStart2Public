@@ -1,7 +1,14 @@
 ﻿CREATE VIEW [Mart].[TsDay]
 AS
 
-SELECT *
+SELECT [Ts_Day]
+      ,[Ts_Date]          
+      ,[MonthNumber]	  
+      ,[MonthName]		  
+      ,[WeekDayNumber]	  
+      ,[WeekDay]		  
+      ,[WeekNumber]		  
+      ,[Iso_WeekNumber]	  
       ,CASE WHEN [Ts_Date] = CONVERT(DATE, GETDATE()) THEN 'Y' 
 	                                                  ELSE 'N'
        END AS Today
@@ -12,4 +19,4 @@ SELECT *
 	                                                                     ELSE 'N'
        END AS LastThirtyDays
 FROM [Core].[TsDay]
-WHERE Ts_Date <= GETDATE()
+WHERE Ts_Date <= DATEADD(DAY, 1, GETDATE())
