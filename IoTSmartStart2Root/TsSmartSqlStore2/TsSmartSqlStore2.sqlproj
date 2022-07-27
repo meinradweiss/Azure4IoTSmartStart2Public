@@ -105,6 +105,7 @@
     <Folder Include="Stage\Stored Procedures" />
     <Folder Include="MartPowerBI\" />
     <Folder Include="MartPowerBI\Views\" />
+    <Folder Include="Config\Views\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HelperScripts\CreateSignals.sql" />
@@ -220,6 +221,8 @@
     <Build Include="MartPowerBI\Views\TsDay.sql" />
     <Build Include="MartPowerBI\Views\Measurement.sql" />
     <Build Include="Security\MartPowerBI.sql" />
+    <Build Include="Mart\Functions\GetTsDayForRelativeTimeWindow.sql" />
+    <Build Include="Config\Views\TargetTimeZone.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include="$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\AzureV12\SqlSchemas\master.dacpac">
