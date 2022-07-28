@@ -1,9 +1,9 @@
 ﻿
 
 CREATE FUNCTION [Mart].[GetMeasurementForRelativeTimeWindow] 
-  (  @DeltaTime       VARCHAR(25)
-    ,@EndDateTime_UTC     DATETIME2(3) 
-	,@TargetTimeZone  VARCHAR(50) = 'Central European Standard Time' 
+  (  @DeltaTime        VARCHAR(25)
+    ,@EndDateTime_UTC  DATETIME2(3) 
+	,@TargetTimeZone   VARCHAR(50) = 'Central European Standard Time' 
   )
 RETURNS TABLE
 AS 
@@ -31,7 +31,7 @@ as
     AND [Ts]     >= GRTW.[StartDateTime_UTC]
     AND [Ts]     <= GRTW.[EndDateTime_UTC]
 )
-select 
+SELECT 
         [Ts_UTC]
 	   ,[Ts]
 	   ,[SignalId]
@@ -48,5 +48,6 @@ select
 	   ,SUBSTRING([Ts_Time],7,2)  AS [Ts_Second]
 	   ,SUBSTRING([Ts_Time],10,3) AS [Ts_Millisecond]
 	   ,@TargetTimeZone           AS [Ts_Timezone]
-from [GetMeasurement]
+FROM [GetMeasurement]
 GO
+
