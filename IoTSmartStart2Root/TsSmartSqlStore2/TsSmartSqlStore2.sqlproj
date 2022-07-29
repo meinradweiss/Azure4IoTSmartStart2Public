@@ -106,6 +106,7 @@
     <Folder Include="MartPowerBI\" />
     <Folder Include="MartPowerBI\Views\" />
     <Folder Include="Config\Views\" />
+    <Folder Include="Core\Functions\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HelperScripts\CreateSignals.sql" />
@@ -132,7 +133,6 @@
     <Build Include="Core\Tables\MeasurementStore.sql" />
     <Build Include="Core\Tables\MeasurementDuplicateKey.sql" />
     <Build Include="Core\Tables\Measurement.sql" />
-    <Build Include="dbo\Views\IndexFragmentation.sql" />
     <Build Include="Mart\Views\Signal.sql" />
     <Build Include="Mart\Views\Measurement.sql" />
     <Build Include="Mart\Views\Date.sql" />
@@ -223,6 +223,7 @@
     <Build Include="Security\MartPowerBI.sql" />
     <Build Include="Mart\Functions\GetTsDayForRelativeTimeWindow.sql" />
     <Build Include="Config\Views\TargetTimeZone.sql" />
+    <Build Include="Core\Functions\GetIndexFragmentation.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include="$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\AzureV12\SqlSchemas\master.dacpac">
