@@ -1,6 +1,7 @@
 ﻿
 
 
+
 CREATE PROCEDURE [Stage].[LoadTransferData]   @From_Ts_Day                 INT = 19000101   -- Ts_Day >=
                                             , @To_Ts_Day                   INT = 99991231   -- Ts_Day <=
 											, @HighWaterMarkMeasuremtStore INT = 19000101   -- Ts_Day <=
@@ -101,7 +102,7 @@ BEGIN
      	
 	UPDATE STATISTICS [Core].[Signal] 
 
- 	EXEC [Logging].[EndStep] @CopyStepId, 'End'
+ 	EXEC [Logging].[EndStep] @CopyStepId, 'End', Null
 
 	--
 

@@ -4,6 +4,9 @@ CREATE PROCEDURE [Config].[SetDebugMode] (@Mode VARCHAR(25))
 AS
 BEGIN
 
+   -- Exec [Config].[SetDebugMode] 'Verbose'
+   -- Exec [Config].[SetDebugMode] 'None'
+
    INSERT INTO [Config].[SystemConfig]([SystemConfigName], [SystemConfigValue])
    SELECT 'DebugMode', @Mode
    --FROM [Config].[SystemConfig]

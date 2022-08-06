@@ -1,9 +1,9 @@
 ﻿
 CREATE PROCEDURE [Core].[RebuildFragmentedIndexes] (@FragmentationLimit FLOAT        = 80.0
-                                                  ,@SchemaName         SYSNAME      = 'Core'
-                                                  ,@TableName          SYSNAME       = '%'
-                                                  ,@DaysToConsider     INT          = 3
-                                                  ,@EndDateTime_UTC    DATETIME2(3) = NULL)
+                                                   ,@SchemaName         SYSNAME      = 'Core'
+                                                   ,@TableName          SYSNAME      = 'Measurement'
+                                                   ,@DaysToConsider     INT          = 5
+                                                   ,@EndDateTime_UTC    DATETIME2(3) = NULL)
 AS
 BEGIN
 
@@ -14,7 +14,7 @@ DECLARE @RebuildIndex CURSOR;
 
 DECLARE @TaskId BIGINT
 DECLARE @TaskParameterValues NVARCHAR(max)
-SET @TaskParameterValues = concat('@FragmentationLimit = ', convert(varchar, @FragmentationLimit), ', @SchemaName = ', convert(varchar, @SchemaName), ', @DaysToConsider = ', convert(varchar, @DaysToConsider), ', @EndDateTime_UTC = ', convert(varchar, @EndDateTime_UTC))
+SET @TaskParameterValues = concat('@FragmentationLimit = ', convert(varchar, @FragmentationLimit), ', @SchemaName = ', convert(varchar, @SchemaName), ', @TableName = ', convert(varchar, @TableName), ', @DaysToConsider = ', convert(varchar, @DaysToConsider), ', @EndDateTime_UTC = ', convert(varchar, @EndDateTime_UTC))
 EXEC [Logging].[StartTask]  'RebuildFragmentedIndexes', @TaskParameterValues, @TaskId =   @TaskId output
 
 DECLARE @TableSchemaName              sysname
