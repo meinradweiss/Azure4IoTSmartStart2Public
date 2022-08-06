@@ -13,7 +13,7 @@
 
 GO
 
-CREATE CLUSTERED INDEX [IX_MeasurementDuplicateKey_SignalId_Ts_Ts_Day] ON [Core].[MeasurementDuplicateKey] ([SignalId] ASC, [Ts] DESC, [Ts_Day] DESC) WITH (DATA_COMPRESSION = PAGE) ON [dayPartitionScheme] ([Ts_Day])
+CREATE CLUSTERED INDEX [IX_MeasurementDuplicateKey_SignalId_Ts_Ts_Day] ON [Core].[MeasurementDuplicateKey] ([SignalId] ASC, [Ts] DESC, [Ts_Day] DESC) WITH (DATA_COMPRESSION = PAGE, STATISTICS_INCREMENTAL  = ON) ON [dayPartitionScheme] ([Ts_Day])
 
 
  

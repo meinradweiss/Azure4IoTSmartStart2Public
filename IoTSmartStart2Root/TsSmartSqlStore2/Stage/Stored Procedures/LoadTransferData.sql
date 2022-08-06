@@ -1,5 +1,6 @@
 ﻿
 
+
 CREATE PROCEDURE [Stage].[LoadTransferData]   @From_Ts_Day                 INT = 19000101   -- Ts_Day >=
                                             , @To_Ts_Day                   INT = 99991231   -- Ts_Day <=
 											, @HighWaterMarkMeasuremtStore INT = 19000101   -- Ts_Day <=
@@ -94,6 +95,17 @@ BEGIN
 
  	EXEC [Logging].[EndStep] @CopyStepId, 'End', @FeedbackMessage
 
+	-- Update Statistics
+	
+	EXEC [Logging].[StartStep] @TaskId, 'Update statistics on [Core].[Signal]', @StepParameterValues, @StepId =   @CopyStepId output
+     	
+	UPDATE STATISTICS [Core].[Signal] 
+
+ 	EXEC [Logging].[EndStep] @CopyStepId, 'End'
+
+	--
+
+
 	--- Reset Sequence
 
 	EXEC [Logging].[StartStep] @TaskId, 'Reset [Core].[Id]', @StepParameterValues, @StepId =   @CopyStepId output
@@ -167,6 +179,8 @@ BEGIN
 			    AND t.[SignalId] IS NULL                      -- Only new rows
 
             SET @FeedbackMessage = CONCAT('Rows copied to [Core].[MeasurementStore]: ',@@rowcount);
+  	        EXEC [Logging].[EndStep] @TransferStepId, 'End', @FeedbackMessage
+
 		  END
 		  ELSE
 		  BEGIN
@@ -196,10 +210,27 @@ BEGIN
 			  WHERE s.[Ts_Day]   = @Ts_Day
 			    AND t.[SignalId] IS NULL                      -- Only new rows
 		    
-	        SET @FeedbackMessage = CONCAT('Rows copied to [Core].[Measurement]: ',@@rowcount); 
-           END
+	       SET @FeedbackMessage = CONCAT('Rows copied to [Core].[Measurement]: ',@@rowcount); 
 
-  	      EXEC [Logging].[EndStep] @TransferStepId, 'End', @FeedbackMessage
+  	       EXEC [Logging].[EndStep] @TransferStepId, 'End', @FeedbackMessage
+
+
+
+
+
+		   -- Rebuild Index and update statistics
+           DECLARE @PartitionNumber              INT
+           SET @PartitionNumber = $PARTITION.[dayPartitionFunction] (@Ts_Day)
+
+		   EXEC [Core].[RebuildIndexPartitionAndUpdateStatistics]  @TaskId          
+                                                           ,'Core'
+	       										           ,'Measurement'       
+												           ,'PK_Core_Measurement'     
+												           ,@PartitionNumber 
+
+
+         END
+
 
         COMMIT
  

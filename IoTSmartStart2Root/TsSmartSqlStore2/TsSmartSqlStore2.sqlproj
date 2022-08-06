@@ -107,6 +107,7 @@
     <Folder Include="MartPowerBI\Views\" />
     <Folder Include="Config\Views\" />
     <Folder Include="Core\Functions\" />
+    <Folder Include="Config\Stored Procedures\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HelperScripts\CreateSignals.sql" />
@@ -224,6 +225,9 @@
     <Build Include="Mart\Functions\GetTsDayForRelativeTimeWindow.sql" />
     <Build Include="Config\Views\TargetTimeZone.sql" />
     <Build Include="Core\Functions\GetIndexFragmentation.sql" />
+    <Build Include="Partition\Views\ListIndexesWithSTATISTICS_INCREMENTAL_OFF.sql" />
+    <Build Include="Core\Stored Procedures\RebuildIndexPartitionAndUpdateStatistics.sql" />
+    <Build Include="Config\Stored Procedures\SetDebugMode.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include="$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\AzureV12\SqlSchemas\master.dacpac">

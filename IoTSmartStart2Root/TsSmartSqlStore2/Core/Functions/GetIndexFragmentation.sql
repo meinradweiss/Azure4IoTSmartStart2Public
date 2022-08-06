@@ -1,8 +1,12 @@
 ﻿
 
+
 CREATE FUNCTION [Core].[GetIndexFragmentation] 
-  (  @DaysToConsider   INT          = 1
-    ,@EndDateTime_UTC  DATETIME2(3) = NULL
+  ( @SchemaName       SYSNAME      = 'Core'
+   ,@TableName        SYSNAME      = '%'
+   ,@DaysToConsider   INT          = 1
+   ,@EndDateTime_UTC  DATETIME2(3) = NULL
+
   )
 RETURNS TABLE
 AS 
@@ -11,8 +15,7 @@ RETURN
 WITH AffectedIndexes
 AS
 (
-
-  SELECT OBJECT_NAME(p.object_id)        AS TableName ,
+  SELECT tab.name                        AS TableName ,
          p.object_id                     AS TableObject_id ,
          p.partition_number,
          i.index_id,
@@ -23,6 +26,8 @@ AS
          prv_right.value                 AS UpperBoundaryValue ,
          p.rows                          AS Rows
   FROM sys.partitions AS p
+   INNER JOIN sys.tables tab
+      on p.object_id = tab.object_id
    INNER JOIN sys.indexes AS i 
       ON i.object_id = p.object_id
      AND i.index_id = p.index_id
@@ -43,6 +48,8 @@ AS
   WHERE prv_right.value IS NOT NULL
     AND prv_right.value  > convert(int, convert(varchar, dateadd(day,(ABS(@DaysToConsider) * -1), COALESCE(@EndDateTime_UTC, GETUTCDATE())), 112))
     AND prv_right.value <= convert(int, convert(varchar,                                     COALESCE(@EndDateTime_UTC, GETUTCDATE()),  112))
+	AND tab.name                   LIKE @TableName
+	AND SCHEMA_NAME(tab.schema_id) =    @SchemaName
 )
 , FragementationInfo
 AS
@@ -52,7 +59,7 @@ AS
        , FragmentedIndex.avg_fragmentation_in_percent
 
   FROM AffectedIndexes
-  CROSS APPLY sys.dm_db_index_physical_stats (DB_ID(), TableObject_id, index_id,partition_number, NULL) AS FragmentedIndex
+  CROSS APPLY sys.dm_db_index_physical_stats (DB_ID(), TableObject_id, index_id, partition_number, NULL) AS FragmentedIndex
 )
 SELECT DISTINCT SCHEMA_NAME(objects.schema_id)  AS TableSchemaName
                , FragementationInfo.TableName
