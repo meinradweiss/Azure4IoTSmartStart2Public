@@ -1,4 +1,5 @@
-﻿CREATE VIEW [MartPowerBI].[Measurement]
+﻿
+CREATE VIEW [MartPowerBI].[Measurement]
 AS
 
 SELECT [Ts]                                                                                                                 AS [Ts_UTC]                                                                                               
@@ -9,7 +10,8 @@ SELECT [Ts]                                                                     
       ,[MeasurementValue]
       ,[MeasurementText]
       ,[MeasurementContext]
-      ,[AllMeasurement].[CreatedAt]
+      ,[AllMeasurement].[CreatedAt]                                                                                         AS [CreatedAt_UTC]
+      ,CONVERT(DATETIME2(3),CONVERT(DATETIMEOFFSET, [AllMeasurement].[CreatedAt]) AT TIME ZONE  TargetTimeZone)             AS [CreatedAt]
 	  ,TargetTimeZone                                                                                                       AS [Ts_Timezone]
 FROM [Core].[AllMeasurement]
   CROSS JOIN [Config].[TargetTimeZone]

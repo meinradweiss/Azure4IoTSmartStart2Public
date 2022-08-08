@@ -1,7 +1,4 @@
-﻿
-
-
-CREATE FUNCTION [Core].[GetIndexFragmentation] 
+﻿CREATE FUNCTION [Core].[GetIndexFragmentation] 
   ( @SchemaName       SYSNAME      = 'Core'
    ,@TableName        SYSNAME      = '%'
    ,@DaysToConsider   INT          = 1
@@ -47,7 +44,7 @@ AS
      AND prv_right.boundary_id = p.partition_number
   WHERE prv_right.value IS NOT NULL
     AND prv_right.value  > convert(int, convert(varchar, dateadd(day,(ABS(@DaysToConsider) * -1), COALESCE(@EndDateTime_UTC, GETUTCDATE())), 112))
-    AND prv_right.value <= convert(int, convert(varchar,                                     COALESCE(@EndDateTime_UTC, GETUTCDATE()),  112))
+    AND prv_right.value <= convert(int, convert(varchar,                                          COALESCE(@EndDateTime_UTC, GETUTCDATE()),  112)) -- prv_right.value = upper boarder -> starts with yesterday
 	AND tab.name                   LIKE @TableName
 	AND SCHEMA_NAME(tab.schema_id) =    @SchemaName
 )

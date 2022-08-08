@@ -46,7 +46,12 @@ Rebuilds the partitions of the Clustered Index on the [Core].[Measurement] table
 
 | Parameter | Data Type | Has<br>default<br>value | Default Value | Purpose |
 | :---      | :---:     | :---:                   | :---:         | :---     |
-|@FragmentationLimit|FLOAT|1|80| Threshold to determine if an index will be rebuild
+|@FragmentationLimit|FLOAT|1|80| Threshold to determine if an index will be rebuild |
+|@SchemaName        |SYSNAME     |1| Core         | Schema name of the tables in which indexes should be rebuilded |
+|@TableName         |SYSNAME     |1| Measurement  | Table name '%' is allowed |
+|@DaysToConsider    |INT         |1| 5            | Number of days back to consider
+|@EndDateTime_UTC   |DATETIME2(3)|1| NULL         | Upper boarder of the time window. NULL => GETUTCDATE() => Start with Yesterday |
+
 
 <br/>
 
@@ -77,8 +82,8 @@ The stored procedure moves data from the table [Core].[Measurement] (day partiti
 
 | Parameter | Data Type | Has<br>default<br>value | Default Value | Purpose |
 | :---      | :---:     | :---:                   | :---:         | :---     |
-|@MeasureMonthLowWaterMark|DATETIME|1|1900-01-01| Start "Ts_Day" 'YYYY-MM-DD' value. <br/>Defines the lower boundary from where the optimization starts. The comparison is done using >= logic.
-|@MeasureMonthHighWaterMark	|	DATETIME	|	1	|	9999-12-31	| End "Ts_Day" 'YYYY-MM-DD' value. <br/>Defines the upper boundary from where the optimization starts. The comparison is done using <= logic
+|@MeasureMonthLowWaterMark|INT|1|19000101| Start "Ts_Day" 'YYYYMMDD' value. <br/>Defines the lower boundary from where the optimization starts. The comparison is done using >= logic.
+|@MeasureMonthHighWaterMark	|	INT	|	1	|	99991231	| End "Ts_Day" 'YYYYMMDD' value. <br/>Defines the upper boundary from where the optimization starts. The comparison is done using <= logic
 |@DropHistoryTable	|	BIT	|	1	|	1	| During the optimization process data is switched out to an intermediate/history table. If the parameter is set to 0 then the switch out table will not be deleted. Otherwise the procedure cleans it up. |
 
 <br/>
@@ -108,8 +113,8 @@ Removes partitions from the specified table
 | :---      | :---:     | :---:                   | :---:         | :---     |
 |@SchemaName|SYSNAME|0|| Schema name of the source table ('Core').
 |@TableName|SYSNAME|0|| Table name of the source table. Either 'Measurement' or 'MeasurementStore'
-|@TS_Day_LowWaterMark|DATETIME|0|| Lower boundary of data, Ts_Day in format 'YYYY-MM-DD', Including this day, compared with >=
-|@TS_Day_HighWaterMark|DATETIME|0|| Upper boundary of data, Ts_Day in format 'YYYY-MM-DD', Including this day, compared with <=
+|@TS_Day_LowWaterMark|INT|0|| Lower boundary of data, Ts_Day in format 'YYYYMMDD', Including this day, compared with >=
+|@TS_Day_HighWaterMark|INT|0|| Upper boundary of data, Ts_Day in format 'YYYYMMDD', Including this day, compared with <=
 |@PreserveSwitchOutTable|TINYINT|1|0| Data is removed form the table using a switch operation. If this parameter is set to one, then the switch out table will not be deleted. Otherwise the switch out table will be deleted.
 
 <br/>

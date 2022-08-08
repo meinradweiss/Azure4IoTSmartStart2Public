@@ -143,9 +143,6 @@
     <Build Include="Ingest\Views\Measurement.sql" />
     <Build Include="Core\Views\AllMeasurement.sql" />
     <Build Include="Security\Functions\fn_SignalSecurityPredicate.sql" />
-    <Build Include="dbo\Stored Procedures\SplitPartitionInMonthJunks.sql" />
-    <Build Include="dbo\Stored Procedures\SplitPartitionInDayJunks.sql" />
-    <Build Include="dbo\Stored Procedures\RebuildFragmentedIndexes.sql" />
     <Build Include="Logging\Stored Procedures\StartTask.sql" />
     <Build Include="Logging\Stored Procedures\StartStep.sql" />
     <Build Include="Logging\Stored Procedures\EndTask.sql" />

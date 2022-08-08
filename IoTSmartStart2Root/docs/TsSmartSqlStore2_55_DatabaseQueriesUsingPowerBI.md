@@ -1,11 +1,11 @@
-Query - IoT solutions using Azure IoT Hub, Azure Stream Analytics and Azure SQL
+Query - Database using Power BI
 =======================================================================
 <br/>
 
 
-- [Query - IoT solutions using Azure IoT Hub, Azure Stream Analytics and Azure SQL](#query---iot-solutions-using-azure-iot-hub-azure-stream-analytics-and-azure-sql)
-- [Querying the database](#querying-the-database)
-  - [Optimal SQL queries](#optimal-sql-queries)
+- [Query - Database using Power BI](#query---database-using-power-bi)
+- [Schema MartPowerBI](#schema-martpowerbi)
+  - [Timezone handling from Power BI](#timezone-handling-from-power-bi)
   - [Relative time windows, time zone selection and Power BI dynamic M parameter support](#relative-time-windows-time-zone-selection-and-power-bi-dynamic-m-parameter-support)
   - [Power BI hybrid tables](#power-bi-hybrid-tables)
 
@@ -13,136 +13,61 @@ Query - IoT solutions using Azure IoT Hub, Azure Stream Analytics and Azure SQL
 <br/>
 
 
-# Querying the database # 
+# Schema MartPowerBI # 
 
-## Optimal SQL queries ##
+## Timezone handling from Power BI ##
 
-Most of the queries sent to an IoT database are looking for Measurement values for a specific Signal and a specified time window. 
-If the where condition of the SQL query filters on Ts_day, then SQL Server has the option to do partition elimination and to speed up query processing. 
-A query which specifies the concrete time window and the corresponding filter on Ts_Day may look like this.
+The view [MartPowerBI].[Measurement] provides timestamps 1:1 as they are stored in the [Core] tables. This attributes are labeled with _UTC (e.g. [Measurement].[Ts] -> [Measurement].[Ts_UTC],  [Measurement].[Ts_Day] -> [Measurement].[Ts_Day_UTC]).
+The "original" columns will provide the corresponding value recalculated in the time zone of the database. If you don't specify the desired time zone in the [Config].[SystemConfig] table then 'Central European Standard Time' will be used as a default.
 
-    declare @FromTs   DATETIME = '2021-12-11 12:37:57.119'
-           ,@ToTs     DATETIME = '2021-12-11 13:37:57.119'
-           ,@SignalId INT       = 1
+</br>
 
+![MartPowerBI.Measurement Table](media/90_10_MartPowerBI_Measurement.png)
 
-    SELECT *
-    FROM  [Core].[AllMeasurement]
-    WHERE [SignalId] = @SignalId
-        AND [Ts_Day] >= CONVERT(DATETIME, CONVERT(DATE, @FromTs))  
-        AND [Ts_Day] <= CONVERT(DATETIME, CONVERT(DATE, @ToTs))   
-        AND [Ts]     >= @FromTs
-        AND [Ts]     <= @ToTs
+</br>
 
+If you are reading data from the Azure SQL Database using the table valued function [Mart].[GetMeasurementForRelativeTimeWindow] then you can specify the timezone in wich the timestamps should be presented via the parameter: @TargetTimeZone
 <br/>
 
-The function [Mart].[GetMeasurementForSignal] help you to run such queries without the need to care about the additionl filter.
+![Mart.GetMeasurementForRelativeTimeWindow](media/90_20_Mart_GetMeasurementForRelativeTimeWindow.png)
 
-    CREATE FUNCTION [Mart].[GetMeasurementForSignal] 
-      (  @SignalId INT
-        ,@FromTs   DATETIME2(3) 
-        ,@ToTs     DATETIME2(3) 
-        
-      )
-    RETURNS TABLE
-    AS 
-    RETURN 
+</br>
 
-      SELECT *
-      FROM  [Core].[AllMeasurement]
-      WHERE [SignalId] = @SignalId
-        AND [Ts_Day] >= CONVERT(DATETIME, CONVERT(DATE, @FromTs)) 
-        AND [Ts_Day] <= CONVERT(DATETIME, CONVERT(DATE, @ToTs)) 
-        AND [Ts]     >= @FromTs
-        AND [Ts]     <= @ToTs
-
-You have just to specify the SignalId and the time range you are looking for and the function takes care on the rest.
-
-    SELECT * 
-    FROM [Mart].[GetMeasurementForSignal]   
-                (1 
-               ,'2021-12-11 12:37:57.119'
-               ,'2021-12-11 13:37:57.119')
-
-<br/>
 <br/>
 
 ## Relative time windows, time zone selection and Power BI dynamic M parameter support ##
 
 <br/>
 
-A more sophisticated function is [Mart].[GetMeasurementForRelativeTimeWindow]. It allow you to: <br/>
+The table valued function [Mart].[GetMeasurementForRelativeTimeWindow]. Allow you not only to specify the time zone in which you would like to get data from. You can also specify the time window that you would like to see.
+<br/>
 
-* specify the size of the window your are looking for (e.g. 1 Hour, 2 Days, ...)
-  * Supported window sizes
-    * 'SECOND'
-    * 'MINUTE'
-    * 'HOUR'
-    * 'DAY'
-    * 'MONTH'
-    * 'YEAR' 
+![Mart.GetMeasurementForRelativeTimeWindow Parameter
+](media/90_30_Mart_GetMeasurementForRelativeTimeWindowParameter.png)
+
+<br/>
+
+The parameter @EndDateTime_UTC is used to specify the upper (end) time of the window you are looking for. And the parameter @DeltaTime the size of the window.
+
+* Supported window sizes are:
+  * 'SECOND'
+  * 'MINUTE'
+  * 'HOUR'
+  * 'DAY'
+  * 'MONTH'
+  * 'YEAR' 
  
 * the end of time window
 * the time zone that you would like to see results hin
-  
+
+<br/>
+<br/>
+
 This function can also be used in conjunction with Power BI and dynamic M parameters.
 
 [Power BI dynamic M parameter](https://docs.microsoft.com/en-us/power-bi/connect-data/desktop-dynamic-m-query-parameters)
 
 <br/>
-
-
-    CREATE FUNCTION [Mart].[GetMeasurementForRelativeTimeWindow] 
-      (  @DeltaTime       VARCHAR(25)
-        ,@EndDateTime     DATETIME2(3) 
-        ,@DefaultTimeZone VARCHAR(50) = 'Central European Standard Time' 
-      )
-    RETURNS TABLE
-    AS 
-    RETURN 
-
-    With [GetMeasurement]
-    as
-    (
-      SELECT [Ts]                                                                                                 AS [Ts_UTC]
-            ,CONVERT(DATETIME2(3),CONVERT(DATETIMEOFFSET, [Ts]) AT TIME ZONE @DefaultTimeZone)                    AS [Ts]
-            ,[Ts_Day]                                                                                             AS [Ts_Day_PartitionKey_UTC]
-            ,[SignalId]
-            ,[MeasurementValue]
-            ,[MeasurementText]
-            ,CONVERT(DATETIME, CONVERT(DATE, Ts))                                                                 AS [Ts_Day_UTC]
-        -- CONVERT(VARCHAR(12) is required to be able to zoom in PowerBI below seconds
-            ,CONVERT(VARCHAR(12),  CONVERT(TIME(3), Ts, 121))                                                     AS [Ts_Time_UTC]
-        ,CONVERT(DATETIME, CONVERT(DATE, CONVERT(DATETIMEOFFSET, [Ts]) AT TIME ZONE @DefaultTimeZone))        AS [Ts_Day]
-        -- CONVERT(VARCHAR(12) is required to be able to zoom in PowerBI below seconds
-        ,CONVERT(VARCHAR(12), CONVERT(time(3), CONVERT(DATETIMEOFFSET, [Ts]) AT TIME ZONE @DefaultTimeZone))  AS [Ts_Time]
-
-      FROM  [Core].[AllMeasurement]
-        CROSS JOIN [Mart].[GetRelativeTimeWindow] (@DeltaTime, @EndDateTime, @DefaultTimeZone)
-      WHERE [Ts_Day] >= [UtcTs_DayStartDate] 
-        AND [Ts_Day] <= [UtcTs_DayEndDate]
-        AND [Ts]     >= [UtcStartDateTime]
-        AND [Ts]     <= [UtcEndDateTime]
-    )
-    select 
-            [Ts_UTC]
-        ,[Ts]
-        ,[Ts_Day_PartitionKey_UTC]
-        ,[SignalId]
-          ,[MeasurementValue]
-          ,[MeasurementText]
-        
-        ,[Ts_Day_UTC]
-        ,[Ts_Time_UTC]
-
-        ,[Ts_Day]
-        ,[Ts_Time]
-        ,LEFT([Ts_Time],2) AS [Ts_Hour]
-        ,SUBSTRING([Ts_Time],4,2) AS [Ts_Minute]
-        ,SUBSTRING([Ts_Time],7,2) AS [Ts_Second]
-        ,SUBSTRING([Ts_Time],10,3) AS [Ts_Millisecond]
-    from [GetMeasurement]
-
 
 This Power BI sample report shows how the time window can be selected via Filters and how the time zone can be adjusted.
 
