@@ -31,7 +31,7 @@ The following keys are used by the system itself. If the keys don't exist in the
 
  | Key [SystemConfigName] | Value(s) [SystemConfigValue] | Remark | Default Value |
 | :---      | :---     | :---     |:---     |
-|  DebugMode | None/Verbose | In Verbose mode important dynamic SQL will also be printed while executed. | None |
+|  DebugMode | 'None'/'Verbose' | In Verbose mode important dynamic SQL will also be printed while executed. | None |
 | LocalTimezone | Any valid SQL Server time zone | Used to tanslate _UTC times to local time values. | 'Central European Standard Time'|
 
 <br/>

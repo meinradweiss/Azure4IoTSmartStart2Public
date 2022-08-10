@@ -41,6 +41,9 @@ The following steps are required to setup the solution:
 - Initialize partitions
 - Deploy Stream Analytics Jobs
 
+Version: 2.003
+
+
 After the initial setup some maintenance activities should be executed to keep the system in an optimal shape.
 
 # Development environment #
