@@ -6,7 +6,7 @@ Query - Database using Power BI
 - [Query - Database using Power BI](#query---database-using-power-bi)
 - [General way to create Power BI reports on top of (telemetry) data)](#general-way-to-create-power-bi-reports-on-top-of-telemetry-data)
 - [Database Schema MartPowerBI](#database-schema-martpowerbi)
-  - [Timezone handling from Power BI](#timezone-handling-from-power-bi)
+  - [Time zone handling from Power BI](#time-zone-handling-from-power-bi)
 - [Power BI Tempates](#power-bi-tempates)
   - [IoTStartDirectQuery.pbit: Direct Query](#iotstartdirectquerypbit-direct-query)
   - [IoTStartRelativeWindow.pbit: Relative time windows, time zone selection and Power BI dynamic M parameter support](#iotstartrelativewindowpbit-relative-time-windows-time-zone-selection-and-power-bi-dynamic-m-parameter-support)
@@ -24,9 +24,9 @@ There are several ways how you can use Power BI to visualize/analyse IoT data.
 
 |Mode        | Benefit | Remarks |
 | :---      | :---     | :---     |
-| Import Mode | Very Fast reports, full Power BI functionality | No realtime data visible. Dataset must be refreshed to see new data| 
-| Hybrid Mode | Fast reports, Historical data are using 'Import Mode' and realtime data are collected via direct query | Power BI functionality is limited to 'Direct Query Mode'. Requires Power BI premium. |
-| Direct Query Mode | Real time data will be available, without the need of Power BI premium | Potentially high preassure on the SQL Server side. It is important, that partition elimination can kick in and that indexes can be used by SQL Server. There are several ways to achieve this goal. Two of them (IoTStartDirectQuery.pbit, IoTStartRelativeWindow.pbit) are available as Power BI templates. <br/> Only limited functionality |
+| Import Mode | Very Fast reports, full Power BI functionality | No real time data visible. Dataset must be refreshed to see new data| 
+| Hybrid Mode | Fast reports, Historical data are using 'Import Mode' and real time data are collected via direct query | Power BI functionality is limited to 'Direct Query Mode'. Requires Power BI premium. |
+| Direct Query Mode | Real time data will be available, without the need of Power BI premium | Potentially high pressure on the SQL Server side. It is important, that partition elimination can kick in and that indexes can be used by SQL Server. There are several ways to achieve this goal. Two of them (IoTStartDirectQuery.pbit, IoTStartRelativeWindow.pbit) are available as Power BI templates. <br/> Only limited functionality |
 
 <br/>
 The following templates are provided as starting point. 
@@ -43,16 +43,16 @@ The following templates are provided as starting point.
 
 # Database Schema MartPowerBI # 
 
-The schema MartPowerBI contains views which are tailered for Power BI. A power BI report can use them 1:1 to build the nucleus of the dataset.
+The schema MartPowerBI contains views which are tailored  for Power BI. A power BI report can use them 1:1 to build the nucleus of the dataset.
 
 
 |View        | Purpose | Description |
 | :---      | :---     | :---     |
-|Measurement | Fact    | Telemetry data from all data in [Core].[AllMeasurement]. <br/> Timestamp values are availabel in _UTC and configured local time.  |
+|Measurement | Fact    | Telemetry data from all data in [Core].[AllMeasurement]. <br/> Timestamp values are available in _UTC and configured local time.  |
 | Signal | Dimension | List of signals stored in [Core].[Measurement] |
-| TsDay | Dimension | List days/partitions with potenially data. This dimension should be used to filter days of interest. SQL Server can then use it and apply partition elimination.  |
+| TsDay | Dimension | List days/partitions with potentially  data. This dimension should be used to filter days of interest. SQL Server can then use it and apply partition elimination.  |
 | LatestMeasurement | Fact | List of the available latest measurement values ([Core].[LatestMeasurement]) |
-| Timezone | Lookup | Value of the currently configured timezone. |
+| Timezone | Lookup | Value of the currently configured time zone. |
 
 <br/>
 
@@ -63,7 +63,7 @@ The following diagram shows how "table" can be related. All relationships are de
 
 ![MartPowerBI.Measurement Table](media/90_00_ImportOrDirectQueryBasicDataModel.png)
 
-## Timezone handling from Power BI ##
+## Time zone handling from Power BI ##
 
 The view [MartPowerBI].[Measurement] provides timestamps 1:1 as they are stored in the [Core] tables. This attributes are labeled with _UTC (e.g. [Measurement].[Ts] -> [Measurement].[Ts_UTC],  [Measurement].[Ts_Day] -> [Measurement].[Ts_Day_UTC]).
 The "original" columns will provide the corresponding value recalculated in the time zone of the database. If you don't specify the desired time zone in the [Config].[SystemConfig] table then 'Central European Standard Time' will be used as a default.
@@ -74,7 +74,7 @@ The "original" columns will provide the corresponding value recalculated in the 
 
 </br>
 
-If you are reading data from the Azure SQL Database using the table valued function [Mart].[GetMeasurementForRelativeTimeWindow] then you can specify the timezone in wich the timestamps should be presented via the parameter: @TargetTimeZone
+If you are reading data from the Azure SQL Database using the table valued function [Mart].[GetMeasurementForRelativeTimeWindow] then you can specify the time zone in wich the timestamps should be presented via the parameter: @TargetTimeZone
 <br/>
 
 ![Mart.GetMeasurementForRelativeTimeWindow](media/90_20_Mart_GetMeasurementForRelativeTimeWindow.png)
@@ -112,7 +112,7 @@ Data model of Direct query report.
 ## IoTStartRelativeWindow.pbit: Relative time windows, time zone selection and Power BI dynamic M parameter support ##
 
 
-This template uses the following parameters. You have to provide the according vaules when you open the template the first time.
+This template uses the following parameters. You have to provide the according values when you open the template the first time.
 
 | Parameter | Value | Comment |
 | :---      | :---  | :---    |
@@ -154,7 +154,7 @@ The parameter @EndDateTime_UTC is used to specify the upper (end) time of the wi
   * 'YEAR' 
  
 * the end of time window
-* the time zone that you would like to see results hin
+* the time zone that you would like to see results
 
 <br/>
 <br/>
@@ -204,7 +204,7 @@ Hybrid tables in Power BI Premium offers the following benefits:
 
 <br/>
 
-This template uses the following parameters. You have to provide the according vaules when you open the template the first time.
+This template uses the following parameters. You have to provide the according values when you open the template the first time.
 
 | Parameter | Value | Comment |
 | :---      | :---  | :---    |
@@ -221,7 +221,7 @@ The partition key in the database is built on an INT data type. Hybrid tables ar
 ![Date Key Function and Parameter Mapping](media/90_04HybridParameter.png)
 
 
-You can ajust how much data that you would like to load to the model.
+You can adjust how much data that you would like to load to the model.
 ![Date Key Function and Parameter Mapping](media/90_04HybridConfiguration.png)
 
 
