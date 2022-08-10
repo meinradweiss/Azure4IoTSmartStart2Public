@@ -35,7 +35,7 @@ A query which specifies the concrete time window and the corresponding filter on
 
 <br/>
 
-The function [Mart].[GetMeasurementForSignal] help you to run such queries without the need to care about the additionl filter.
+The function [Mart].[GetMeasurementForSignal] help you to run such queries without the need to care about the additional filter.
 
     CREATE FUNCTION [Mart].[GetMeasurementForSignal] 
       (  @SignalId INT

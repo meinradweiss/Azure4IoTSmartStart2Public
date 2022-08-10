@@ -65,7 +65,7 @@ The following diagram shows how "table" can be related. All relationships are de
 
 ## Time zone handling from Power BI ##
 
-The view [MartPowerBI].[Measurement] provides timestamps 1:1 as they are stored in the [Core] tables. This attributes are labeled with _UTC (e.g. [Measurement].[Ts] -> [Measurement].[Ts_UTC],  [Measurement].[Ts_Day] -> [Measurement].[Ts_Day_UTC]).
+The view [MartPowerBI].[Measurement] provides timestamps 1:1 as they are stored in the [Core] tables. This attributes are labelled with _UTC (e.g. [Measurement].[Ts] -> [Measurement].[Ts_UTC],  [Measurement].[Ts_Day] -> [Measurement].[Ts_Day_UTC]).
 The "original" columns will provide the corresponding value recalculated in the time zone of the database. If you don't specify the desired time zone in the [Config].[SystemConfig] table then 'Central European Standard Time' will be used as a default.
 
 </br>
@@ -87,7 +87,7 @@ If you are reading data from the Azure SQL Database using the table valued funct
 
 ## IoTStartDirectQuery.pbit: Direct Query ##
 
-This template uses the following parameters. You have to provide the according vaules when you open the template the first time.
+This template uses the following parameters. You have to provide the according values when you open the template the first time.
 
 | Parameter | Value | Comment |
 | :---      | :---  | :---    |
@@ -216,7 +216,7 @@ This template uses the following parameters. You have to provide the according v
 
 <br/>
 
-The partition key in the database is built on an INT data type. Hybrid tables are internally working with DateTime types. The function DataKey is used to translate the DateTime values to Int values.
+The partition key in the database is built on an INT data type. Hybrid tables are internally working with DateTime types. The function DateKey is used to translate the DateTime values to Int values.
 
 ![Date Key Function and Parameter Mapping](media/90_04HybridParameter.png)
 

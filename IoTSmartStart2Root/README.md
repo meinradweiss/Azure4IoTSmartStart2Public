@@ -12,5 +12,4 @@ Links to Documentation
 - [Import existing telemetry data](docs/TsSmartSqlStore2_70_ImportExistingTelemetryData.md)
 - [Version Info and System Configuration](docs/TsSmartSqlStore2_80_VersionInfoAndConfigurationSettings.md)
 - [API reference](docs/TsSmartSqlStore2_90_API.md)
-- [Table/View reference](docs/TsSmartSqlStore2_95_Table.md)
 
