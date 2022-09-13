@@ -396,6 +396,7 @@ Modify the query, that it fits to your message. You only need to adjust the piec
 | SignalName | String that identifies a signal. Concatination of DeviceId and "_" and Measurand | Device01_Temperatur |
 | MeasurementValue | Numeric value of the measurement (integer and floating point) | 23.56 |
 | MeasurementText | Alphanumeric value of the measurement | closed |
+| MeasurementContext | Optional column for additional, project specific, context for the Measurement. Ideally specified using JSON notation.  | { "Contract": 128, "Cost center": "AX123" } |
 | SourceTS | Original value of the attribute which is used to get the attribute Ts from. No conversation to a data time data type is applied. -> useful to debug query. | |
  | SourceMeasurementValue | Original value of the attribute which is used to get the attribute  MeasurementValue from. No conversation to a numeric type is applied. -> useful to debug query. | |
 | SourceMeasurementText | Original value of the attribute which is used to get the attribute  Measurementtext from. -> useful to debug query. | |

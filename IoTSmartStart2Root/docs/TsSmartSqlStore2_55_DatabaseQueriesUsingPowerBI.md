@@ -4,7 +4,7 @@ Query - Database using Power BI
 
 
 - [Query - Database using Power BI](#query---database-using-power-bi)
-- [General way to create Power BI reports on top of (telemetry) data)](#general-way-to-create-power-bi-reports-on-top-of-telemetry-data)
+- [General ways to create Power BI reports on top of (telemetry) data)](#general-ways-to-create-power-bi-reports-on-top-of-telemetry-data)
 - [Database Schema MartPowerBI](#database-schema-martpowerbi)
   - [Time zone handling from Power BI](#time-zone-handling-from-power-bi)
 - [Power BI Tempates](#power-bi-tempates)
@@ -15,7 +15,7 @@ Query - Database using Power BI
 
 <br/>
 
-# General way to create Power BI reports on top of (telemetry) data)
+# General ways to create Power BI reports on top of (telemetry) data)
 
 
 There are several ways how you can use Power BI to visualize/analyse IoT data.
