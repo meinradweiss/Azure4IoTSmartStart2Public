@@ -20,7 +20,7 @@ EXEC [Logging].[StartTask]  'SplitPartitionInDayJunks', @TaskParameterValues, @T
 
 
 DECLARE @AddSplits CURSOR;
-DECLARE @SplitKey  DATE;
+DECLARE @SplitKey  INT;
 
 DECLARE @SQLString nVARCHAR(max)
 
@@ -59,7 +59,7 @@ AS
 ), ExpectedSplitKeys
 AS
 (
-select * , convert(DATE, thedate) as YearMonthDayBasedKey
+select * , convert(int, convert(varchar, thedate,112)) as YearMonthDayBasedKey
 from DateList
 )
 , ExistingSplitKey
@@ -104,6 +104,41 @@ WHILE @@fetch_status = 0
       EXEC sp_executesql @statement = @SQLString ;
 	  --PRINT @SQLString
 	  exec [Logging].[EndStep] @StepId, 'End', NULL
+
+	  exec [Logging].[StartStep] @TaskId, 'Add Ts_Day to [Core].[TsDay]', @StepParameterValues, @StepId =   @StepId output
+
+      ;WITH Ts_Day_ListExtended
+       AS
+       (
+         SELECT @SplitKey                                       AS Ts_Day, 
+                CONVERT(Date, CONVERT(VARCHAR, @SplitKey), 112) AS Ts_Date
+         WHERE  @SplitKey > 19000101
+       )
+
+      INSERT INTO [Core].[TsDay]
+           ([Ts_Day]
+           ,[Ts_Date]
+           ,[MonthNumber]
+           ,[MonthName]
+           ,[WeekDayNumber]
+           ,[WeekDay]
+           ,[WeekNumber]
+           ,[Iso_WeekNumber]) 
+
+      SELECT Ts_Day
+            ,Ts_Date
+      	    ,DATEPART(mm, Ts_Date)       as MonthNumber
+      	    ,FORMAT(Ts_Date, 'MMMM')     as MonthName
+      	    ,DATEPART(dw, Ts_Date)       as WeekDayNumber
+      	    ,DATENAME(dw, Ts_Date)       as WeekDay
+      	    ,DATENAME(WEEK, Ts_Date)     as WeekNumber
+      	    ,DATENAME(ISO_WEEK, Ts_Date) as Iso_WeekNumber
+      FROM Ts_Day_ListExtended
+      WHERE NOT EXISTS (SELECT 'X' FROM [Core].[TsDay] WHERE Ts_Day = @SplitKey)	 
+
+	  EXEC [Logging].[EndStep] @StepId, 'End', NULL
+
+
 
       FETCH next FROM @AddSplits INTO @SplitKey
   END

@@ -38,16 +38,16 @@ AS
     CROSS JOIN [FullList] AS [FullList]
 )
    
-  SELECT   datum                                       AS DateId
-		  ,CONVERT(DATETIME2(0), CONVERT(DATE, datum)) AS [Ts_Day]
-          ,DATEPART(YEAR,    datum)      AS Year
-              , DATEPART(MONTH,   datum) AS Month
-              , DATEPART(WEEKDAY, datum) AS Weekday
-              , DATEPART(WEEK,    datum) AS Week
-              , DATEPART(DAY,    datum)  AS DayShort
+  SELECT   datum                                          AS DateId
+          ,CONVERT(INT, CONVERT(VARCHAR(30), datum, 112)) AS [Ts_Day]
+          ,DATEPART(YEAR,    datum)                       AS Year
+              , DATEPART(MONTH,   datum)                  AS Month
+              , DATEPART(WEEKDAY, datum)                  AS Weekday
+              , DATEPART(WEEK,    datum)                  AS Week
+              , DATEPART(DAY,    datum)                   AS DayShort
               , Right('0' + Convert(varchar, DATEPART(DAY,    datum)),2)
                 + '.' + Right('0' + Convert(varchar, DATEPART(month,    datum)),2)
                 + '.' + Convert(varchar, DATEPART(year,    datum))
-                                          AS Day
+                                                          AS Day
      FROM         [DateList] AS [DateList_1]
      WHERE     (DATEPART(YEAR, datum) <= DATEPART(YEAR, GETUTCDATE()))

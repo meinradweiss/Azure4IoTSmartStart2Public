@@ -12,14 +12,49 @@ BEGIN
   IF  @AreYouReallySure = 1
   BEGIN
 
-    -- Delete Measurement data
-    EXEC [Partition].[RemoveDataPartitionsFromTable] 'Core', 'Measurement',             '1900.01.01', '9999.12.31', 0
-    EXEC [Partition].[RemoveDataPartitionsFromTable] 'Core', 'MeasurementTransfer',     '1900.01.01', '9999.12.31', 0
-    EXEC [Partition].[RemoveDataPartitionsFromTable] 'Core', 'MeasurementStore',        '1900.01.01', '9999.12.31', 0
-    EXEC [Partition].[RemoveDataPartitionsFromTable] 'Core', 'MeasurementDuplicateKey', '1900.01.01', '9999.12.31', 0
+    -- Delete Switch out and History tables
 
-    --DELETE FROM [Core].[MeasurementDuplicateKey]
+	DECLARE @Sql            NVARCHAR(MAX)
+    DECLARE @TablesToDelete CURSOR
+    
+    SET @TablesToDelete = CURSOR FOR
+    SELECT CONCAT('DROP TABLE ', QUOTENAME(SCHEMA_NAME(schema_id)) , '.' , QUOTENAME(name) , ';')
+    FROM sys.tables
+    WHERE SCHEMA_NAME(schema_id) IN ('Archive','Transfer')
+      AND    (name LIKE 'Switched%'
+       OR   name LIKE 'History%');
+    
+      OPEN @TablesToDelete  
+    
+      FETCH NEXT FROM @TablesToDelete   
+      INTO @Sql
+    
+    
+      WHILE @@FETCH_STATUS = 0  
+      BEGIN
+        EXEC sp_executesql @Sql
+    
+        FETCH NEXT FROM @TablesToDelete   
+          INTO @Sql
+    END
+	
+    CLOSE @TablesToDelete
+    DEALLOCATE @TablesToDelete
+
+
+    -- Delete data from partitioned tables
+    EXEC [Partition].[RemoveDataPartitionsFromTable] 'Core', 'Measurement',             19000101, 99991231, 0
+    EXEC [Partition].[RemoveDataPartitionsFromTable] 'Core', 'MeasurementTransfer',     19000101, 99991231, 0
+    EXEC [Partition].[RemoveDataPartitionsFromTable] 'Core', 'MeasurementStore',        19000101, 99991231, 0
+    EXEC [Partition].[RemoveDataPartitionsFromTable] 'Core', 'MeasurementDuplicateKey', 19000101, 99991231, 0
+
+    EXEC [Partition].[RemoveDataPartitionsFromTable] 'Stage', 'Measurement',            19000101, 99991231, 0
+
+
     DELETE FROM [Core].[MeasurementWrongMessageFormatOrDataType]
+
+    -- Delete config data
+    DELETE FROM [Config].[SignalDefaultConfig]
 
 
 

@@ -1,10 +1,10 @@
 ﻿
 
 
-CREATE PROCEDURE [Core].[CopyMeasurementFromTs_DayToTs_Day] @FromTs_Day       DATETIME2 (0) 
-                                                          ,@MoveDays          INT
-                                                          ,@OffsetMillisecond INT = 0
-														  ,@MaxNumberOfRows   INT = 100000000
+CREATE PROCEDURE [Core].[CopyMeasurementFromTs_DayToTs_Day] @FromTs_Day        INT
+                                                           ,@MoveDays          INT
+                                                           ,@OffsetMillisecond INT = 0
+														   ,@MaxNumberOfRows   INT = 100000000
 
 AS
 BEGIN

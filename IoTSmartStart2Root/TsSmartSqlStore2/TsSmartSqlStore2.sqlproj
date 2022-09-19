@@ -100,6 +100,14 @@
     <Folder Include="Config\Functions\" />
     <Folder Include="Helper\" />
     <Folder Include="Helper\Stored Procedures\" />
+    <Folder Include="Stage" />
+    <Folder Include="Stage\Tables" />
+    <Folder Include="Stage\Stored Procedures" />
+    <Folder Include="MartPowerBI\" />
+    <Folder Include="MartPowerBI\Views\" />
+    <Folder Include="Config\Views\" />
+    <Folder Include="Core\Functions\" />
+    <Folder Include="Config\Stored Procedures\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HelperScripts\CreateSignals.sql" />
@@ -126,7 +134,6 @@
     <Build Include="Core\Tables\MeasurementStore.sql" />
     <Build Include="Core\Tables\MeasurementDuplicateKey.sql" />
     <Build Include="Core\Tables\Measurement.sql" />
-    <Build Include="dbo\Views\IndexFragmentation.sql" />
     <Build Include="Mart\Views\Signal.sql" />
     <Build Include="Mart\Views\Measurement.sql" />
     <Build Include="Mart\Views\Date.sql" />
@@ -136,10 +143,6 @@
     <Build Include="Ingest\Views\Measurement.sql" />
     <Build Include="Core\Views\AllMeasurement.sql" />
     <Build Include="Security\Functions\fn_SignalSecurityPredicate.sql" />
-    <Build Include="dbo\Stored Procedures\SplitPartitionInMonthJunks.sql" />
-    <Build Include="dbo\Stored Procedures\SplitPartitionInDayJunks.sql" />
-    <Build Include="dbo\Stored Procedures\RebuildFragmentedIndexes.sql" />
-    <Build Include="Partition\Stored Procedures\CreateSwitchTable.sql" />
     <Build Include="Logging\Stored Procedures\StartTask.sql" />
     <Build Include="Logging\Stored Procedures\StartStep.sql" />
     <Build Include="Logging\Stored Procedures\EndTask.sql" />
@@ -149,7 +152,7 @@
     <Build Include="Storage\dayPartitionFunction.sql" />
     <Build Include="Storage\monthPartitionScheme.sql" />
     <Build Include="Storage\dayPartitionScheme.sql" />
-    <Build Include="Security\stage.sql" />
+    <Build Include="Security\Stage.sql" />
     <Build Include="Security\Security.sql" />
     <Build Include="Security\Partition.sql" />
     <Build Include="Security\Mart.sql" />
@@ -203,6 +206,25 @@
     <Build Include="Partition\Stored Procedures\CheckNonTrustedConstraints.sql" />
     <Build Include="Config\Tables\SignalDefaultConfig.sql" />
     <Build Include="Mart\Functions\GetPivotHumidityTemperature.sql" />
+    <Build Include="Stage\Tables\SignalDefaultConfig.sql" />
+    <Build Include="Stage\Tables\Signal.sql" />
+    <Build Include="Stage\Tables\Measurement.sql" />
+    <Build Include="Stage\Stored Procedures\LoadTransferData.sql" />
+    <Build Include="Core\Tables\TsDay.sql" />
+    <Build Include="Mart\Views\TsDay.sql" />
+    <Build Include="Mart\Views\AllMeasurement.sql" />
+    <Build Include="Core\Views\VersionInfo.sql" />
+    <Build Include="MartPowerBI\Views\Signal.sql" />
+    <Build Include="MartPowerBI\Views\LatestMeasurement.sql" />
+    <Build Include="MartPowerBI\Views\TsDay.sql" />
+    <Build Include="MartPowerBI\Views\Measurement.sql" />
+    <Build Include="Security\MartPowerBI.sql" />
+    <Build Include="Mart\Functions\GetTsDayForRelativeTimeWindow.sql" />
+    <Build Include="Config\Views\TargetTimeZone.sql" />
+    <Build Include="Core\Functions\GetIndexFragmentation.sql" />
+    <Build Include="Partition\Views\ListIndexesWithSTATISTICS_INCREMENTAL_OFF.sql" />
+    <Build Include="Core\Stored Procedures\RebuildIndexPartitionAndUpdateStatistics.sql" />
+    <Build Include="Config\Stored Procedures\SetDebugMode.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include="$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\AzureV12\SqlSchemas\master.dacpac">

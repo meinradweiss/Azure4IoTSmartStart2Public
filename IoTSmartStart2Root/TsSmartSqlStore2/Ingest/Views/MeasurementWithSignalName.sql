@@ -10,6 +10,7 @@ AS
 	,CONVERT(NVARCHAR (256), NULL) AS [Measurand]
 	,[MeasurementValue] 
     ,[MeasurementText]
+    ,[MeasurementContext]
   FROM [Core].[Measurement]
 GO
 
@@ -52,11 +53,13 @@ AS
 	,[SignalId] 
 	,[MeasurementValue] 
     ,[MeasurementText]
+    ,[MeasurementContext]
   )
   SELECT [Ts]
         ,[SignalId]
         ,[MeasurementValue] 
         ,[MeasurementText]
+        ,[MeasurementContext]
   FROM INSERTED AS i
   INNER JOIN [Core].[Signal]  AS s
     ON	i.[SignalName] = s.[SignalName];

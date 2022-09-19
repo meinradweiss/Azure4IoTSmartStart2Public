@@ -3,8 +3,8 @@
 
 
 
-CREATE PROCEDURE [Core].[OptimiseDataStorage] @measureMonthLowWaterMark  DATETIME2 (0) = '1900.01.01'   -- Ts_Day >=
-											, @measureMonthHighWaterMark DATETIME2 (0) = '9999.12.31'   -- Ts_Day <=
+CREATE PROCEDURE [Core].[OptimiseDataStorage] @measureMonthLowWaterMark  INT = 19000101   -- Ts_Day >=
+											, @measureMonthHighWaterMark INT = 99991231   -- Ts_Day <=
                                             , @DropHistoryTable BIT = 1
 AS
 
@@ -35,7 +35,7 @@ BEGIN
 		 ,@HistoryTableName    SYSNAME
 		 ,@Partition_Number    INT
          ,@StepParameterValues NVARCHAR(max)
-		 ,@Ts_Day              DATETIME2 (0)
+		 ,@Ts_Day              INT
 
   BEGIN TRY
 
@@ -44,8 +44,8 @@ BEGIN
     BEGIN
       EXEC [Helper].[Conditional_print] 'Old data in [Core].[MeasurementTransfer] pre processing necessary'
 
-      DECLARE @MinTs_DayOfTransfer DATETIME2 (0)
-	         ,@CleanUpLastOptimiseRunStepId bigint
+      DECLARE @MinTs_DayOfTransfer          INT
+	         ,@CleanUpLastOptimiseRunStepId BIGINT
 
 
 	  SELECT @MinTs_DayOfTransfer = MIN(Ts_Day) 
@@ -75,7 +75,7 @@ BEGIN
     FROM [Core].[Measurement]
     WHERE Ts_Day >= @measureMonthLowWaterMark
       AND Ts_Day <= @measureMonthHighWaterMark
-      AND Ts_Day < CONVERT(DATE, DATEADD(DAY, -1, GETUTCDATE()))  -- Older than today
+      AND Ts_Day < CONVERT(INT, CONVERT(VARCHAR, DATEADD(DAY, -1, GETUTCDATE()), 112))    -- Older than today
     ORDER BY 1 ASC;
 
     OPEN DaysToProcess  
@@ -102,9 +102,9 @@ BEGIN
 
 	  /* Only empty partitions can be split in when a columnstore index exists on the table. To avoid this problem, data is only moved if
 	     there is a partition defined for the corresponding Ts_Day                                                                        */
-	  DECLARE @MaxPartitionBorder DATETIME2 (0)
+	  DECLARE @MaxPartitionBorder INT
 
-      SELECT @MaxPartitionBorder = MAX(CONVERT(DATE, FromValue))
+      SELECT @MaxPartitionBorder = MAX(CONVERT(INT, FromValue))
       FROM [Partition].[PartitionRangeValues]
       WHERE PartitionFunctionName = 'monthPartitionFunction'
 
@@ -173,7 +173,7 @@ BEGIN
   /*********************************************************************/
   BEGIN CATCH
 
-	DECLARE @PrintText VARCHAR(255)
+	DECLARE @PrintText VARCHAR(2048)
     SET @PrintText = CONCAT('Exception catched; Procedure = ', OBJECT_NAME(@@PROCID), '; @StartTrancount=', @StartTrancount, '; @@TRANCOUNT = ', @@TRANCOUNT)
     PRINT @PrintText
 

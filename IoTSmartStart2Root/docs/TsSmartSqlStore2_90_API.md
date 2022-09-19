@@ -47,7 +47,7 @@ Creates "empty" partitions for dayPartion Schema/Function and also for the month
 
 | Parameter | Data Type | Has<br>default<br>value | Default Value | Purpose |
 | :---      | :---:     | :---:                   | :---:         | :---     |
-| @startDate | DATETIME2 (0) | 1      | "today" | Specifies the start day to maintain the partition borders. The stored procedure takes this date and then calculates the first day of the corresponding month to define the real start date. |
+| @startDate | DATETIME | 1      | "today" | Specifies the start day to maintain the partition borders. The stored procedure takes this date and then calculates the first day of the corresponding month to define the real start date. |
 | @dayAheadNumber | INT | 1 |  35    | The number of days that are added to the current day. The system seeks then forward to the first day of the next month. <br/> e.g. @startDate = '2021-09-07', <br/>the current date is '2021-09-29' and  @dayAheadNumber int = 35 <br/>-> Partitions from 2021-09-01 to 2021-12-01 will be created, <br/> for the dayPartion Schema/Function and also for the monthPartition Schema/Function |
 
 
@@ -62,8 +62,8 @@ The stored procedure moves data from the table [Core].[Measurement] (day partiti
 
 | Parameter | Data Type | Has<br>default<br>value | Default Value | Purpose |
 | :---      | :---:     | :---:                   | :---:         | :---     |
-|@MeasureMonthLowWaterMark|DATETIME2(0)|1|1900-01-01| Start "Ts_Day" 'YYYY-MM-DD' value. <br/>Defines the lower boundary from where the optimization starts. The comparison is done using >= logic.
-|@MeasureMonthHighWaterMark	|	DATETIME2(0)	|	1	|	9999-12-31	| End "Ts_Day" 'YYYY-MM-DD' value. <br/>Defines the upper boundary from where the optimization starts. The comparison is done using <= logic
+|@MeasureMonthLowWaterMark|INT|1|19000101| Start "Ts_Day" 'YYYYMMDD' value. <br/>Defines the lower boundary from where the optimization starts. The comparison is done using >= logic.
+|@MeasureMonthHighWaterMark	|	INT	|	1	|	99991231	| End "Ts_Day" 'YYYYMMDD' value. <br/>Defines the upper boundary from where the optimization starts. The comparison is done using <= logic
 |@DropHistoryTable	|	BIT	|	1	|	1	| During the optimization process data is switched out to an intermediate/history table. If the parameter is set to 0 then the switch out table will not be deleted. Otherwise the procedure cleans it up. |
 
 
@@ -75,12 +75,15 @@ The stored procedure moves data from the table [Core].[Measurement] (day partiti
 
 ### Stored Procedure: [Core].[RebuildFragmentedIndexes] ###
 
-Rebuilds the partitions of the Clustered Index on the [Core].[Measurement] table if the fragmentation is greater than the specified threshold and if the partition relates to a point in time between today -90 days and today -1 day.
-
+Rebuilds the partitions of the Clustered Index on the [Core].[Measurement] table if the fragmentation is greater than the specified threshold and if the partition relates to a point in time specified time window.
 
 | Parameter | Data Type | Has<br>default<br>value | Default Value | Purpose |
 | :---      | :---:     | :---:                   | :---:         | :---     |
 |@FragmentationLimit|FLOAT|1|80| Threshold to determine if an index will be rebuild
+|@SchemaName | SYSNAME | 1 | 'Core' |
+|@TableName  | SYSNAME | 1 | 'Measurement' |
+|@DaysToConsider | INT | 1 | 5 | Defines how may days back from @EndDateTime_UTC the indexes are checked |
+|@EndDateTime_UTC | DATETIME2(3)| 1 | NULL | Null -> starting from yesterday |
 
 
 
@@ -97,8 +100,8 @@ Removes partitions from the specified table
 | :---      | :---:     | :---:                   | :---:         | :---     |
 |@SchemaName|SYSNAME|0|| Schema name of the source table ('Core').
 |@TableName|SYSNAME|0|| Table name of the source table. Either 'Measurement' or 'MeasurementStore'
-|@TS_Day_LowWaterMark|DATE|0|| Lower boundary of data, Ts_Day in format 'YYYY-MM-DD', Including this day, compared with >=
-|@TS_Day_HighWaterMark|DATE|0|| Upper boundary of data, Ts_Day in format 'YYYY-MM-DD', Including this day, compared with <=
+|@TS_Day_LowWaterMark|INT|0|| Lower boundary of data, Ts_Day in format 'YYYYMMDD', Including this day, compared with >=
+|@TS_Day_HighWaterMark|INT|0|| Upper boundary of data, Ts_Day in format 'YYYYMMDD', Including this day, compared with <=
 |@PreserveSwitchOutTable|TINYINT|1|0| Data is removed form the table using a switch operation. If this parameter is set to 1, then the switch out table will not be deleted. Otherwise the switch out table will be deleted.
 
 <br/>
@@ -111,7 +114,7 @@ Removes partitions from the specified table
 
 ### Stored Procedure: [Core].[GetOverviewOfDataInDatabase] ###
 
-This stored procedure provides an overview of the content in the most important objects.
+This stored procedure provides an overview of the content in the most important objects. It is helpful if the database does not contain a lot of data. I
 
 ### View: Logging.LogInfo  ###
 
@@ -134,6 +137,7 @@ Simple way to read data from the database by just providing a SignalId and a tim
 
 Function to specify a relative time window and the desired time zone of the result set.
   * Supported window sizes
+    * 'SECOND'
     * 'MINUTE'
     * 'HOUR'
     * 'DAY'

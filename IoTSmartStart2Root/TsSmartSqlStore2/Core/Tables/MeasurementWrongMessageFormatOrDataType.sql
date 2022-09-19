@@ -3,7 +3,8 @@
     [SignalId]                INT                                 NULL,
     [SignalName]              NVARCHAR (256)                      NULL,   
     [MeasurementValue]        REAL                                NULL,
-    [MeasurementText]         NVARCHAR (4000)                     NULL,
+    [MeasurementText]         NVARCHAR (2000)                     NULL,
+    [MeasurementContext]      NVARCHAR (2000)                     NULL,      -- Allow to store special context information. Best used as JSON Container
     [SourceTS]                NVARCHAR (MAX)                      NULL,
     [SourceMeasurementValue]  NVARCHAR (MAX)                      NULL,
     [SourceMeasurementText]   NVARCHAR (MAX)                      NULL,

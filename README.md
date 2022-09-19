@@ -6,8 +6,11 @@ Documentation
 - [Setup solution](IoTSmartStart2Root/docs/TsSmartSqlStore2_10_SetupSolution.md)
 - [Maintain solution](IoTSmartStart2Root/docs/TsSmartSqlStore2_20_MaintainDatabase.md)
 - [Querying data](IoTSmartStart2Root/docs/TsSmartSqlStore2_50_DatabaseQueries.md)
+- - [Querying data using Power BI](IoTSmartStart2Root/docs/TsSmartSqlStore2_55_DatabaseQueriesUsingPowerBI.md)
+- [Import existing telemetry data](IoTSmartStart2Root/docs/TsSmartSqlStore2_70_ImportExistingTelemetryData.md)
+- [Version Info and System Configuration](IoTSmartStart2Root/docs/TsSmartSqlStore2_80_VersionInfoAndConfigurationSettings.md)
 - [API reference](IoTSmartStart2Root/docs/TsSmartSqlStore2_90_API.md)
-- [Table/View reference](IoTSmartStart2Root/docs/TsSmartSqlStore2_95_Table.md)
+
 
 # Contribute
 

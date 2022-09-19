@@ -8,6 +8,7 @@ AS
 	,[SignalId] 
 	,[MeasurementValue] 
 	,[MeasurementText] 
+    ,[MeasurementContext]
   FROM [Core].[Measurement]
 GO
 
@@ -26,20 +27,22 @@ AS
        ,[SignalId]
        ,[MeasurementValue]
        ,[MeasurementText]
+       ,[MeasurementContext]
        ,[CreatedAt]
   )
   SELECT 
         i.[Ts]               
-       ,CONVERT(DATE, i.[Ts])           AS Ts_Day      -- Calculate partition Key, Date type will be converted to DateTime2(0)
+       ,CONVERT(INT, CONVERT(VARCHAR, i.[Ts], 112)) as [Ts_Day]      -- Calculate partition Key, allow getting a day list in for example Power BI
        ,CONVERT(INT,    i.[SignalId])
        ,i.[MeasurementValue] 
        ,i.[MeasurementText]
+       ,i.[MeasurementContext]
         ,GETUTCDATE()
   FROM INSERTED as i 
     INNER JOIN [Core].[AllMeasurement] AS m
        ON  i.[SignalId]   = m.[SignalId] 
          AND i.[Ts]       = m.[Ts] 
-         AND m.[Ts_Day]   = CONVERT(DATETIME2(0), CONVERT(DATE, i.[Ts]));  -- Enable partition elimination
+         AND m.[Ts_Day]   = CONVERT(INT, CONVERT(VARCHAR, i.[Ts], 112));  -- Enable partition elimination
 
   -- Insert duplicate records if the happen in one batch of data
   INSERT INTO [Core].[MeasurementDuplicateKey] 
@@ -49,13 +52,15 @@ AS
        ,[SignalId]
        ,[MeasurementValue]
        ,[MeasurementText]
+       ,[MeasurementContext]
        ,[CreatedAt]
   )
   SELECT [INSERTED].[Ts]
-        ,CONVERT(DATE, [INSERTED].[Ts])           AS [Ts_Day]      -- Calculate partition Key, Date type will be converted to DateTime2(0)
-        ,CONVERT(INT,  [INSERTED].[SignalId])     AS [SignalId]
+        ,CONVERT(INT, CONVERT(VARCHAR, [INSERTED].[Ts], 112)) AS [Ts_Day]      -- Calculate partition Key, Date type will be converted to DateTime
+        ,CONVERT(INT, [INSERTED].[SignalId])                  AS [SignalId]
         ,[MeasurementValue]
         ,[MeasurementText]
+        ,[MeasurementContext]
         ,GETUTCDATE()
   FROM [INSERTED]
     INNER JOIN (SELECT i.[Ts]               
@@ -78,14 +83,16 @@ AS
     ,[SignalId]
     ,[MeasurementValue]
     ,[MeasurementText]
+    ,[MeasurementContext]
     ,[CreatedAt]
   )
   SELECT 
        i.[Ts] 
-      ,CONVERT(DATE, i.[Ts]) as Ts_Day  -- Calculate partition Key, Date type will be converted to DateTime2(0)
-      ,CONVERT(INT,           i.[SignalId])
+      ,CONVERT(INT, CONVERT(VARCHAR, i.[Ts], 112)) AS [Ts_Day]  -- Calculate partition Key
+      ,CONVERT(INT, i.[SignalId])                  AS [SignalId]
       ,MIN(i.[MeasurementValue])        -- Pick the smaller if more than one arrived
       ,MIN(i.[MeasurementText])
+      ,MIN(i.[MeasurementContext])
       ,CASE WHEN [SetCreatedAt] = 1 THEN GETUTCDATE()
                                     ELSE NULL
                                     END
@@ -93,7 +100,7 @@ AS
   LEFT OUTER JOIN [Core].[AllMeasurement] as m
       ON  i.[SignalId] = m.[SignalId] 
          AND i.[Ts]       = m.[Ts] 
-         AND m.[Ts_Day]   = CONVERT(DATETIME2(0), CONVERT(DATE, i.[Ts]))
+         AND m.[Ts_Day]   = CONVERT(INT, CONVERT(VARCHAR, i.[Ts], 112))
   INNER JOIN [Core].[Signal] as s
      ON i.[SignalId] = s.[SignalId] 
   WHERE m.[SignalId]   IS NULL                           -- Really new events
@@ -107,14 +114,16 @@ AS
   SET [LatestMeasurement].[Ts]                 = [LatestInserted].[Ts]
      ,[LatestMeasurement].[MeasurementValue]   = [LatestInserted].[MeasurementValue]
      ,[LatestMeasurement].[MeasurementText]    = [LatestInserted].[MeasurementText]
+     ,[LatestMeasurement].[MeasurementContext] = [LatestInserted].[MeasurementContext]
      ,[CreatedAt]                              = GETUTCDATE()   -- Can be used to check pipeline end-to-end duration
   FROM [Core].[LatestMeasurement]
   INNER JOIN 
       (SELECT 
 	         inserted.[SignalId]                   -- The same signal may appear multiple times in the same insert statement,
             ,inserted.[Ts]                    
-            ,MAX(inserted.[MeasurementValue])   AS [MeasurementValue]   -- Pick the bigger if more than one arrived
-            ,MAX(inserted.[MeasurementText])    AS [MeasurementText]
+            ,MAX(inserted.[MeasurementValue])     AS [MeasurementValue]   -- Pick the bigger if more than one arrived
+            ,MAX(inserted.[MeasurementText])      AS [MeasurementText]
+            ,MAX(inserted.[MeasurementContext])   AS [MeasurementContext]
        FROM inserted
          INNER JOIN (SELECT [SignalId], MAX([Ts]) AS [MaxTs]
                      FROM inserted

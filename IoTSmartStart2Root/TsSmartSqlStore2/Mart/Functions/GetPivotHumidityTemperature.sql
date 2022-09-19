@@ -33,9 +33,9 @@ RETURN
     					   ,'Temperature'
     					   ,'Dummy')
   	AND [Ts]       >=   @FromTs
-  	AND [Ts_Day]   >=   CONVERT(DATETIME2(0), CONVERT(DATE,@FromTs))
+  	AND [Ts_Day]   >=   CONVERT(INT, CONVERT(VARCHAR, @FromTs, 112)) 
   	AND [Ts]       <=   @ToTs
-  	AND [Ts_Day]   <=   CONVERT(DATETIME2(0), CONVERT(DATE,@ToTs))
+  	AND [Ts_Day]   <=   CONVERT(INT, CONVERT(VARCHAR, @ToTs,   112)) 
   	AND [DeviceId] LIKE @DeviceId
   )
   SELECT *

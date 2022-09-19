@@ -41,6 +41,9 @@ The following steps are required to setup the solution:
 - Initialize partitions
 - Deploy Stream Analytics Jobs
 
+Version: 2.003
+
+
 After the initial setup some maintenance activities should be executed to keep the system in an optimal shape.
 
 # Development environment #
@@ -79,7 +82,7 @@ The following button deploys the core infrastructure into your chosen subscripti
 
 For the custom deployment, the following parameters need to be defined:
 - **Region**: Select your designated Azure Region, make sure to pick a region which supports the necessary components (e.g. West Europe)
-- **Unique Solution Prefix**: Pick a unique string for your solution. The name must be between 3 and 24 characters in length and use numbers and lower-case letters only.<br/> The prefix will be appended at the front of your Azure services. <br/>It is helpful, if it relates somehow to your project and it is the part of the object names that makes them unique.
+- **Unique Solution Prefix**: Pick a unique string for your solution. The name must be between 3 and 17 characters in length and use numbers and lower-case letters only.<br/> The prefix will be appended at the front of your Azure services. <br/>It is helpful, if it relates somehow to your project and it is the part of the object names that makes them unique.
   - Example: <br/> 
     Unique Solution Prefix: **ch4iot4wsxxx** -> Azure IotHub: **ch4iot4wsxxx**hub, Azure SQL Server: **ch4iot4wsxxx**sqlserver, ...
 - **Sql Administrator Login**: pick a username for your SQL administrator (don't use a "well known name" like, sa, admin, manager, ...)
@@ -151,7 +154,7 @@ Creates "empty" partitions for dayPartion and monthPartition Schema/Function. If
 
 | Parameter | Data Type | Has<br>default<br>value | Default Value | Purpose |
 | :---      | :---:     | :---:                   | :---:         | :---     |
-| @startDate | DATETIME2 (0) | 1      | "today" | Specifies the start day to maintain the partition borders. The stored procedure takes this date and then calculates the first day of the corresponding month to define the real start date. |
+| @startDate | DATETIME | 1      | "today" | Specifies the start day to maintain the partition borders. The stored procedure takes this date and then calculates the first day of the corresponding month to define the real start date. |
 | @dayAheadNumber | INT | 1 |  35    | The number of days that are added to the current day. The system seeks then forward to the first day of the next month. <br/> e.g. @startDate = '2021-09-07', <br/>the current date is '2021-09-29' and  @dayAheadNumber int = 35 <br/>-> Partitions from 2021-09-01 to 2021-12-01 will be created, <br/> for the dayPartion Schema/Function and also for the monthPartition Schema/Function |
 
 If you would like to load historical data to the database, then you should specify the @startDate parameter. It should be set to the first date of the historical data.<br/>
@@ -393,6 +396,7 @@ Modify the query, that it fits to your message. You only need to adjust the piec
 | SignalName | String that identifies a signal. Concatination of DeviceId and "_" and Measurand | Device01_Temperatur |
 | MeasurementValue | Numeric value of the measurement (integer and floating point) | 23.56 |
 | MeasurementText | Alphanumeric value of the measurement | closed |
+| MeasurementContext | Optional column for additional, project specific, context for the Measurement. Ideally specified using JSON notation.  | { "Contract": 128, "Cost center": "AX123" } |
 | SourceTS | Original value of the attribute which is used to get the attribute Ts from. No conversation to a data time data type is applied. -> useful to debug query. | |
  | SourceMeasurementValue | Original value of the attribute which is used to get the attribute  MeasurementValue from. No conversation to a numeric type is applied. -> useful to debug query. | |
 | SourceMeasurementText | Original value of the attribute which is used to get the attribute  Measurementtext from. -> useful to debug query. | |

@@ -1,5 +1,5 @@
 ﻿
-CREATE PROCEDURE [Partition].[MaintainPartitionBorders] (@startDate DATETIME2 (0) = NULL, @dayAheadNumber int = 35)
+CREATE PROCEDURE [Partition].[MaintainPartitionBorders] (@startDate DATETIME = NULL, @dayAheadNumber int = 35)
 AS
 BEGIN
 
