@@ -30,7 +30,7 @@ The schema [Stage] contains the following objects:
 |  [Stage].[Measurement] | Table | 
 |  [Stage].[Signal] | Table | Signal reference records. Each signal referenced in [Stage].[Measurement] must be available in this table. Make sure that you don't get any overlap with SignalId's in the table [Core].[Signal]
 |  [Stage].[SignalDefaultConfig] | Table | Existing configuration data |
-|  [Stage].[Measurement] | Procedure | Transfer data from [Stage] to [Core]
+|  [Stage].[LoadTransferData] | Procedure | Transfer data from [Stage] to [Core]
 
 <br/>
 <br/>
@@ -49,5 +49,5 @@ The schema [Stage] contains the following objects:
 <br/>
 ## Import process ##
 
-Copy aexisting data to the corresponding [Stage] tables and execute the stored procedure [Stage].[LoadTransferData]. If you have a huge dataset, then it is possible to load all data into [Stage].[Signal]/[Stage].[SignalDefaultConfig] and execute the procedure [Stage].[LoadTransferData] with just one day in the @From_Ts_Day : @To_Ts_Day. After the first day is processed, you can start the Stream Analytics job to load actual telemetry data to the database and load the rest of the 'historical' data day by day. If you start with the newest days, then user will se the probaly most important data at first.
+Copy existing data to the corresponding [Stage] tables and execute the stored procedure [Stage].[LoadTransferData]. If you have a huge dataset, then it is possible to load all data into [Stage].[Signal]/[Stage].[SignalDefaultConfig] and execute the procedure [Stage].[LoadTransferData] with just one day in the @From_Ts_Day : @To_Ts_Day. After the first day is processed, you can start the Stream Analytics job to load actual telemetry data to the database and load the rest of the 'historical' data day by day. If you start with the newest days, then user will se the probaly most important data at first.
 
